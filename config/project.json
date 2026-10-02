@@ -1,0 +1,86 @@
+{
+  "owner": "ZKMathquant",
+  "repo": "Wiringprint_prequel",
+  "branch": "main",
+  "visibility": "private",
+  "kaggle_username": "iamakagggler",
+  "kernel_prefix": "nid-wiringprint-prequel",
+  "kernel_slots": 2,
+  "accelerator": "NvidiaTeslaT4",
+  "require_gpu_substring": "T4",
+  "session_limit_hours": 12,
+  "safety_margin_minutes": 40,
+  "max_bundle_mb": 400,
+  "secret_mode": "kaggle_secrets",
+  "dataset_sources": [],
+  "git_author": {
+    "name": "ZKMathquant",
+    "email": "248182527+ZKMathquant@users.noreply.github.com"
+  },
+  "model_sources": [],
+  "default_order": [
+    "i0",
+    "i1",
+    "i2",
+    "i3",
+    "i4"
+  ],
+  "notebooks": {
+    "i0": {
+      "file": "notebooks/i0.ipynb",
+      "title": "full_identity_research",
+      "source_file": "full_identity_research.ipynb",
+      "needs_hf": false,
+      "hf_models": [],
+      "kaggle_inputs": []
+    },
+    "i1": {
+      "file": "notebooks/i1.ipynb",
+      "title": "sequel_1",
+      "source_file": "sequel_1.ipynb",
+      "needs_hf": true,
+      "hf_models": [
+        "Qwen/Qwen2.5-1.5B",
+        "google/gemma-2-2b",
+        "meta-llama/Llama-3.2-1B"
+      ],
+      "kaggle_inputs": []
+    },
+    "i2": {
+      "file": "notebooks/i2.ipynb",
+      "title": "sequel_2",
+      "source_file": "sequel_2.ipynb",
+      "needs_hf": true,
+      "hf_models": [
+        "Qwen/Qwen2.5-1.5B",
+        "google/gemma-2-2b",
+        "meta-llama/Llama-3.2-1B"
+      ],
+      "kaggle_inputs": []
+    },
+    "i3": {
+      "file": "notebooks/i3.ipynb",
+      "title": "sequel_5",
+      "source_file": "sequel_5.ipynb",
+      "needs_hf": true,
+      "hf_models": [
+        "Qwen/Qwen2.5-1.5B",
+        "google/gemma-2-2b",
+        "meta-llama/Llama-3.2-1B"
+      ],
+      "kaggle_inputs": []
+    },
+    "i4": {
+      "file": "notebooks/i4.ipynb",
+      "title": "sequel_6",
+      "source_file": "sequel_6.ipynb",
+      "needs_hf": true,
+      "hf_models": [
+        "Qwen/Qwen2.5-1.5B",
+        "google/gemma-2-2b",
+        "meta-llama/Llama-3.2-1B"
+      ],
+      "kaggle_inputs": []
+    }
+  }
+}

@@ -1,0 +1,35 @@
+name: Freeze guard
+
+# Successful runs under runs/ are append-only. This check fails (red X, visible in the Actions tab)
+# if a push modifies, renames or deletes anything that already existed under runs/.
+# Deliberate cleanup: put [unfreeze] in the commit message.
+
+on:
+  push:
+    paths:
+      - 'runs/**'
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - env:
+          BEFORE: ${{ github.event.before }}
+          MSG: ${{ github.event.head_commit.message }}
+        run: |
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BEFORE" 2>/dev/null; then
+            echo "No usable previous commit - nothing to compare."; exit 0
+          fi
+          CHANGED=$(git diff --name-status --diff-filter=MDRTU "$BEFORE" "$GITHUB_SHA" -- runs/ || true)
+          if [ -n "$CHANGED" ]; then
+            if echo "$MSG" | grep -q '\[unfreeze\]'; then echo "[unfreeze] present - allowed"; exit 0; fi
+            echo "::error::Frozen runs were modified:"; echo "$CHANGED"; exit 1
+          fi
+          echo "runs/ only received additions."

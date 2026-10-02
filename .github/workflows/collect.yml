@@ -1,0 +1,41 @@
+name: Recover results from Kaggle
+
+# Manual safety net: if a Kaggle run finished but could not push (GitHub outage, expired token),
+# its bundle is still in the kernel's output. This pulls it and commits it (frozen rule applies).
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Run id to recover'
+        required: true
+      notebook:
+        description: 'Notebook id to recover'
+        required: true
+      slot:
+        description: 'Kernel slot the run used (a or b)'
+        default: 'a'
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -q "kaggle>=1.7"
+      - env:
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          IN_RUN: ${{ inputs.run_id }}
+          IN_NB: ${{ inputs.notebook }}
+          IN_SLOT: ${{ inputs.slot }}
+        run: python tools/collect.py --run-id "$IN_RUN" --notebook "$IN_NB" --slot "${IN_SLOT:-a}"
