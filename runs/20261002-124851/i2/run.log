@@ -1,0 +1,1452 @@
+Input Notebook:  /tmp/nid_work/i2/i2.ipynb
+Output Notebook: /tmp/nid_work/i2.executed.ipynb
+Working directory: /tmp/nid_work/i2
+Executing notebook with kernel: python3
+Executing Cell 1---------------------------------------
+Ending Cell 1------------------------------------------
+Executing Cell 2---------------------------------------
+Ending Cell 2------------------------------------------
+Executing Cell 3---------------------------------------
+Ending Cell 3------------------------------------------
+Executing Cell 4---------------------------------------
+Device: cuda
+
+Selected dtype: bfloat16 (auto: fp32 would not fit all three checkpoints on this GPU)
+NOTE: the 'expect ~1e-5 / near-fp32-noise' exactness comments throughout this
+      notebook should be read relative to this dtype -- bf16/fp16 exactness
+      checks will show diffs on the order of 1e-2 to 1e-3, not fp32's ~1e-5,
+      but the qualitative conclusion (aligned ~0, unaligned large) is unchanged.
+
+Ending Cell 4------------------------------------------
+Executing Cell 5---------------------------------------
+Ending Cell 5------------------------------------------
+Executing Cell 6---------------------------------------
+cudnn.benchmark: True
+matmul.allow_tf32: True
+
+Ending Cell 6------------------------------------------
+Executing Cell 7---------------------------------------
+Ending Cell 7------------------------------------------
+Executing Cell 8---------------------------------------
+Ending Cell 8------------------------------------------
+Executing Cell 9---------------------------------------
+Ending Cell 9------------------------------------------
+Executing Cell 10--------------------------------------
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+
+Hugging Face auth: Kaggle Secrets available, but reading HF_TOKEN raised: ConnectionError: Connection error trying to communicate with service.
+==============================================================================
+LOADING MODELS (one at a time, low_cpu_mem_usage, memory-checked)
+==============================================================================
+  GPU mem [before any load]: allocated=0.00GB  reserved=0.00GB  total=15.64GB
+
+Loading Qwen2.5-1.5B (Qwen/Qwen2.5-1.5B) ...
+
+config.json:   0%|          | 0.00/684 [00:00<?, ?B/s]
+tokenizer_config.json: 0.00B [00:00, ?B/s]
+vocab.json: 0.00B [00:00, ?B/s]
+merges.txt: 0.00B [00:00, ?B/s]
+tokenizer.json: 0.00B [00:00, ?B/s]
+model.safetensors:   0%|          | 0.00/3.09G [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]
+generation_config.json:   0%|          | 0.00/138 [00:00<?, ?B/s]
+  layers=28  hidden=1536  heads=12  kv_heads=2  head_dim=128  d_ff=8960  dtype=torch.bfloat16
+  GPU mem [after loading Qwen2.5-1.5B]: allocated=3.09GB  reserved=3.11GB  total=15.64GB
+
+Loading Gemma-2-2b (google/gemma-2-2b) ...
+
+config.json:   0%|          | 0.00/818 [00:00<?, ?B/s]
+tokenizer_config.json: 0.00B [00:00, ?B/s]
+tokenizer.json:   0%|          | 0.00/17.5M [00:00<?, ?B/s]
+special_tokens_map.json:   0%|          | 0.00/636 [00:00<?, ?B/s]
+model.safetensors.index.json: 0.00B [00:00, ?B/s]
+Downloading (incomplete total...): 0.00B [00:00, ?B/s]
+Fetching 3 files:   0%|          | 0/3 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/288 [00:00<?, ?it/s]
+generation_config.json:   0%|          | 0.00/168 [00:00<?, ?B/s]
+  layers=26  hidden=2304  heads=8  kv_heads=4  head_dim=256  d_ff=9216  dtype=torch.bfloat16
+  GPU mem [after loading Gemma-2-2b]: allocated=8.32GB  reserved=8.33GB  total=15.64GB
+
+Loading Llama-3.2-1B (meta-llama/Llama-3.2-1B) ...
+
+config.json:   0%|          | 0.00/843 [00:00<?, ?B/s]
+tokenizer_config.json: 0.00B [00:00, ?B/s]
+tokenizer.json: 0.00B [00:00, ?B/s]
+special_tokens_map.json:   0%|          | 0.00/301 [00:00<?, ?B/s]
+model.safetensors:   0%|          | 0.00/2.47G [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/146 [00:00<?, ?it/s]
+generation_config.json:   0%|          | 0.00/185 [00:00<?, ?B/s]
+  layers=16  hidden=2048  heads=32  kv_heads=8  head_dim=64  d_ff=8192  dtype=torch.bfloat16
+  GPU mem [after loading Llama-3.2-1B]: allocated=10.79GB  reserved=10.80GB  total=15.64GB
+
+All three families confirmed to share the same module layout.
+  GPU mem [after all loads]: allocated=10.79GB  reserved=10.80GB  total=15.64GB
+
+(If this is uncomfortably close to the GPU's total, set PRECISION_MODE = 'bf16'
+ in the earlier cell and re-run from the top, or restart the kernel first to
+ release any memory held from a previous run.)
+
+Ending Cell 10-----------------------------------------
+Executing Cell 11--------------------------------------
+Ending Cell 11-----------------------------------------
+Executing Cell 12--------------------------------------
+==============================================================================
+SMOKE TEST: ConditionModel swap reaches the real forward pass
+==============================================================================
+
+      Qwen2.5-1.5B: PASS  (zeroed-layer diff=2.325e+01, post-restore diff=0.000e+00)
+
+        Gemma-2-2b: PASS  (zeroed-layer diff=1.525e+01, post-restore diff=0.000e+00)
+
+      Llama-3.2-1B: PASS  (zeroed-layer diff=1.950e+01, post-restore diff=0.000e+00)
+
+All models: swap correctly reaches the forward pass and restores cleanly.
+Any near-1.0 CKA values seen later reflect CKA's known insensitivity to small
+perturbations relative to a few dominant activation channels -- not a broken swap.
+
+Ending Cell 12-----------------------------------------
+Executing Cell 13--------------------------------------
+Ending Cell 13-----------------------------------------
+Executing Cell 14--------------------------------------
+Ending Cell 14-----------------------------------------
+Executing Cell 15--------------------------------------
+==============================================================================
+STEP 1: BASELINE, ALL THREE FAMILIES
+==============================================================================
+
+                Qwen2.5-1.5B | accuracy=0.4650  perplexity=   14.130  ECE=0.0807
+
+                  Gemma-2-2b | accuracy=0.4655  perplexity=   26.088  ECE=0.0891
+
+                Llama-3.2-1B | accuracy=0.4292  perplexity=   21.268  ECE=0.0919
+
+Ending Cell 15-----------------------------------------
+Executing Cell 16--------------------------------------
+Ending Cell 16-----------------------------------------
+Executing Cell 17--------------------------------------
+==============================================================================
+STEP 2-3: ALIGNED / UNALIGNED / GATE-ONLY MLP PERMUTATION, LAYER 4
+==============================================================================
+
+
+Qwen2.5-1.5B (layer 4, d_ff=8960):
+  aligned   max|logit diff| = 2.19e-01  (expect ~0 at this dtype's noise floor)
+  unaligned max|logit diff| = 19.250  (expect large)
+  gate-only max|logit diff| = 17.000  (expect large -- new architecture-specific break)
+
+
+Gemma-2-2b (layer 4, d_ff=9216):
+  aligned   max|logit diff| = 5.00e-01  (expect ~0 at this dtype's noise floor)
+  unaligned max|logit diff| = 24.125  (expect large)
+  gate-only max|logit diff| = 23.750  (expect large -- new architecture-specific break)
+
+
+Llama-3.2-1B (layer 4, d_ff=8192):
+  aligned   max|logit diff| = 2.91e-01  (expect ~0 at this dtype's noise floor)
+  unaligned max|logit diff| = 11.750  (expect large)
+  gate-only max|logit diff| = 11.938  (expect large -- new architecture-specific break)
+  GPU mem [after MLP condition setup (should be ~unchanged from model-load, by design)]: allocated=11.42GB  reserved=11.50GB  total=15.64GB
+
+Ending Cell 17-----------------------------------------
+Executing Cell 18--------------------------------------
+==============================================================================
+STEP 4: FULL BATTERY, ALL THREE FAMILIES x {aligned, unaligned, gate-only}
+==============================================================================
+
+-- Qwen2.5-1.5B --
+
+                     aligned | accuracy=0.4650  perplexity=   14.143  ECE=0.0993
+
+                   unaligned | accuracy=0.3696  perplexity=   27.828  ECE=0.0823
+
+                    gateonly | accuracy=0.4023  perplexity=   20.438  ECE=0.0789
+
+-- Gemma-2-2b --
+
+                     aligned | accuracy=0.4655  perplexity=   26.162  ECE=0.0890
+
+                   unaligned | accuracy=0.4519  perplexity=   35.926  ECE=0.1068
+
+                    gateonly | accuracy=0.4417  perplexity=   36.014  ECE=0.1421
+
+-- Llama-3.2-1B --
+
+                     aligned | accuracy=0.4292  perplexity=   21.347  ECE=0.0713
+
+                   unaligned | accuracy=0.4201  perplexity=   33.529  ECE=0.1096
+
+                    gateonly | accuracy=0.3592  perplexity=   48.905  ECE=0.1158
+
+Expected: aligned diffs ~0 across all three models and all three metrics;
+unaligned and gate-only diffs large, confirming the SwiGLU/GeGLU two-branch
+dependency has no partial-credit regime.
+
+Ending Cell 18-----------------------------------------
+Executing Cell 19--------------------------------------
+Ending Cell 19-----------------------------------------
+Executing Cell 20--------------------------------------
+==============================================================================
+STEP 5: LINEAR CKA PER LAYER, BASELINE vs. ALIGNED/UNALIGNED, ALL FAMILIES
+==============================================================================
+NOTE: CKA in [0,1] is bounded and, in real trained LLMs, is often dominated by a
+handful of very-high-magnitude ('outlier'/'massive activation') channels -- a real,
+nonzero perturbation elsewhere in the representation can still round to 1.0000 at
+4 decimal places, especially under bf16/fp16. So each row below also prints the raw
+max|hidden-state diff| (unrounded, in scientific notation) -- if THAT is exactly 0.0,
+the perturbation genuinely isn't reaching the forward pass (a real bug); if it's
+nonzero but CKA still reads ~1.0000, that's CKA-insensitivity, not a broken swap.
+
+-- Qwen2.5-1.5B --
+
+  layer  0: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  1: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  2: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  3: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  4: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  5: CKA(aligned)=1.000000 (raw diff=1.56e-02)   CKA(unaligned)=0.999999 (raw diff=6.40e+01)
+
+  layer  6: CKA(aligned)=1.000000 (raw diff=1.25e-01)   CKA(unaligned)=1.000000 (raw diff=6.40e+01)
+
+  layer  7: CKA(aligned)=1.000000 (raw diff=1.25e-01)   CKA(unaligned)=0.999999 (raw diff=6.40e+01)
+
+  layer  8: CKA(aligned)=1.000000 (raw diff=2.50e-01)   CKA(unaligned)=1.000000 (raw diff=6.40e+01)
+
+  layer  9: CKA(aligned)=1.000000 (raw diff=2.50e-01)   CKA(unaligned)=0.999999 (raw diff=6.40e+01)
+
+  layer 10: CKA(aligned)=1.000000 (raw diff=2.50e-01)   CKA(unaligned)=1.000000 (raw diff=6.40e+01)
+
+  layer 11: CKA(aligned)=1.000000 (raw diff=2.50e-01)   CKA(unaligned)=1.000000 (raw diff=6.40e+01)
+
+  layer 12: CKA(aligned)=1.000000 (raw diff=5.00e-01)   CKA(unaligned)=1.000000 (raw diff=6.40e+01)
+
+  layer 13: CKA(aligned)=1.000000 (raw diff=5.00e-01)   CKA(unaligned)=0.999999 (raw diff=6.40e+01)
+
+  layer 14: CKA(aligned)=1.000000 (raw diff=5.00e-01)   CKA(unaligned)=0.999999 (raw diff=6.40e+01)
+
+  layer 15: CKA(aligned)=1.000000 (raw diff=5.00e-01)   CKA(unaligned)=0.999999 (raw diff=6.40e+01)
+
+  layer 16: CKA(aligned)=1.000000 (raw diff=5.00e-01)   CKA(unaligned)=0.999999 (raw diff=6.40e+01)
+
+  layer 17: CKA(aligned)=1.000000 (raw diff=5.00e-01)   CKA(unaligned)=1.000000 (raw diff=6.40e+01)
+
+  layer 18: CKA(aligned)=1.000000 (raw diff=5.00e-01)   CKA(unaligned)=1.000000 (raw diff=6.40e+01)
+
+  layer 19: CKA(aligned)=1.000000 (raw diff=5.00e-01)   CKA(unaligned)=1.000000 (raw diff=6.40e+01)
+
+  layer 20: CKA(aligned)=1.000000 (raw diff=5.00e-01)   CKA(unaligned)=0.999999 (raw diff=6.40e+01)
+
+  layer 21: CKA(aligned)=1.000000 (raw diff=5.00e-01)   CKA(unaligned)=0.999999 (raw diff=6.40e+01)
+
+  layer 22: CKA(aligned)=1.000000 (raw diff=7.50e-01)   CKA(unaligned)=1.000000 (raw diff=6.40e+01)
+
+  layer 23: CKA(aligned)=1.000000 (raw diff=1.00e+00)   CKA(unaligned)=0.999999 (raw diff=8.00e+01)
+
+  layer 24: CKA(aligned)=1.000000 (raw diff=1.00e+00)   CKA(unaligned)=0.999997 (raw diff=9.60e+01)
+
+  layer 25: CKA(aligned)=1.000000 (raw diff=1.00e+00)   CKA(unaligned)=0.999998 (raw diff=9.60e+01)
+
+  layer 26: CKA(aligned)=1.000000 (raw diff=1.50e+00)   CKA(unaligned)=0.999996 (raw diff=8.00e+01)
+
+  layer 27: CKA(aligned)=0.999976 (raw diff=2.00e+00)   CKA(unaligned)=0.845105 (raw diff=2.56e+02)
+
+  layer 28: CKA(aligned)=0.999901 (raw diff=1.50e+00)   CKA(unaligned)=0.856772 (raw diff=6.50e+01)
+
+-- Gemma-2-2b --
+
+  layer  0: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  1: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  2: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  3: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  4: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  5: CKA(aligned)=1.000000 (raw diff=1.56e-02)   CKA(unaligned)=0.996731 (raw diff=8.80e+01)
+
+  layer  6: CKA(aligned)=1.000001 (raw diff=2.50e-01)   CKA(unaligned)=0.999057 (raw diff=8.40e+01)
+
+  layer  7: CKA(aligned)=1.000000 (raw diff=5.00e-01)   CKA(unaligned)=0.999130 (raw diff=7.60e+01)
+
+  layer  8: CKA(aligned)=1.000000 (raw diff=5.00e-01)   CKA(unaligned)=0.999141 (raw diff=8.80e+01)
+
+  layer  9: CKA(aligned)=0.999999 (raw diff=1.00e+00)   CKA(unaligned)=0.999167 (raw diff=8.80e+01)
+
+  layer 10: CKA(aligned)=1.000000 (raw diff=5.00e-01)   CKA(unaligned)=0.999305 (raw diff=8.80e+01)
+
+  layer 11: CKA(aligned)=1.000000 (raw diff=1.00e+00)   CKA(unaligned)=0.999205 (raw diff=8.80e+01)
+
+  layer 12: CKA(aligned)=1.000000 (raw diff=1.00e+00)   CKA(unaligned)=0.999024 (raw diff=8.80e+01)
+
+  layer 13: CKA(aligned)=0.999999 (raw diff=1.00e+00)   CKA(unaligned)=0.999225 (raw diff=1.00e+02)
+
+  layer 14: CKA(aligned)=1.000000 (raw diff=1.00e+00)   CKA(unaligned)=0.999249 (raw diff=9.80e+01)
+
+  layer 15: CKA(aligned)=1.000000 (raw diff=1.00e+00)   CKA(unaligned)=0.999098 (raw diff=9.60e+01)
+
+  layer 16: CKA(aligned)=1.000000 (raw diff=1.00e+00)   CKA(unaligned)=0.998994 (raw diff=1.02e+02)
+
+  layer 17: CKA(aligned)=1.000000 (raw diff=1.00e+00)   CKA(unaligned)=0.999251 (raw diff=8.80e+01)
+
+  layer 18: CKA(aligned)=1.000000 (raw diff=1.00e+00)   CKA(unaligned)=0.999462 (raw diff=8.80e+01)
+
+  layer 19: CKA(aligned)=1.000000 (raw diff=2.00e+00)   CKA(unaligned)=0.999406 (raw diff=9.20e+01)
+
+  layer 20: CKA(aligned)=1.000000 (raw diff=2.00e+00)   CKA(unaligned)=0.999386 (raw diff=9.20e+01)
+
+  layer 21: CKA(aligned)=1.000000 (raw diff=2.00e+00)   CKA(unaligned)=0.999255 (raw diff=9.20e+01)
+
+  layer 22: CKA(aligned)=0.999999 (raw diff=2.00e+00)   CKA(unaligned)=0.999000 (raw diff=9.50e+01)
+
+  layer 23: CKA(aligned)=1.000000 (raw diff=2.00e+00)   CKA(unaligned)=0.999224 (raw diff=9.20e+01)
+
+  layer 24: CKA(aligned)=1.000000 (raw diff=4.00e+00)   CKA(unaligned)=0.999308 (raw diff=9.60e+01)
+
+  layer 25: CKA(aligned)=0.999999 (raw diff=6.25e+00)   CKA(unaligned)=0.999369 (raw diff=2.12e+02)
+
+  layer 26: CKA(aligned)=0.999847 (raw diff=3.88e+00)   CKA(unaligned)=0.881429 (raw diff=7.24e+01)
+
+-- Llama-3.2-1B --
+
+  layer  0: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  1: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  2: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  3: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  4: CKA(aligned)=1.000000 (raw diff=0.00e+00)   CKA(unaligned)=1.000000 (raw diff=0.00e+00)
+
+  layer  5: CKA(aligned)=1.000000 (raw diff=9.77e-04)   CKA(unaligned)=1.000000 (raw diff=1.23e+00)
+
+  layer  6: CKA(aligned)=1.000000 (raw diff=1.56e-02)   CKA(unaligned)=1.000000 (raw diff=1.83e+00)
+
+  layer  7: CKA(aligned)=1.000000 (raw diff=1.56e-02)   CKA(unaligned)=1.000000 (raw diff=2.19e+00)
+
+  layer  8: CKA(aligned)=1.000000 (raw diff=1.56e-02)   CKA(unaligned)=1.000000 (raw diff=1.92e+00)
+
+  layer  9: CKA(aligned)=1.000000 (raw diff=1.56e-02)   CKA(unaligned)=0.999999 (raw diff=2.18e+00)
+
+  layer 10: CKA(aligned)=1.000000 (raw diff=3.12e-02)   CKA(unaligned)=0.999997 (raw diff=2.63e+00)
+
+  layer 11: CKA(aligned)=1.000000 (raw diff=3.12e-02)   CKA(unaligned)=0.999994 (raw diff=3.07e+00)
+
+  layer 12: CKA(aligned)=1.000000 (raw diff=3.91e-02)   CKA(unaligned)=0.999988 (raw diff=2.59e+00)
+
+  layer 13: CKA(aligned)=1.000000 (raw diff=6.25e-02)   CKA(unaligned)=0.999979 (raw diff=3.29e+00)
+
+  layer 14: CKA(aligned)=1.000000 (raw diff=9.38e-02)   CKA(unaligned)=0.999966 (raw diff=4.35e+00)
+
+  layer 15: CKA(aligned)=1.000000 (raw diff=1.25e-01)   CKA(unaligned)=0.999955 (raw diff=5.61e+00)
+
+  layer 16: CKA(aligned)=0.999992 (raw diff=1.71e-01)   CKA(unaligned)=0.964566 (raw diff=7.09e+00)
+
+<Figure size 1815x462 with 3 Axes>
+Ending Cell 20-----------------------------------------
+Executing Cell 21--------------------------------------
+Ending Cell 21-----------------------------------------
+Executing Cell 22--------------------------------------
+==============================================================================
+STEP 6: CAUSAL TRACING -- DOES THE UNALIGNED (BROKEN) MODEL STILL LOCATE THE FACT
+==============================================================================
+
+
+-- Qwen2.5-1.5B (3/3 length-matched pairs used) --
+  layer  0: mean restoration = 1.270
+  layer  1: mean restoration = 1.928
+  layer  2: mean restoration = 2.129
+  layer  3: mean restoration = 1.798
+  layer  4: mean restoration = 2.138
+  layer  5: mean restoration = 2.470
+  layer  6: mean restoration = 2.469
+  layer  7: mean restoration = 2.736
+  layer  8: mean restoration = 2.599
+  layer  9: mean restoration = 2.478
+  layer 10: mean restoration = 2.550
+  layer 11: mean restoration = 2.945
+  layer 12: mean restoration = 2.677
+  layer 13: mean restoration = 2.536
+  layer 14: mean restoration = 2.537
+  layer 15: mean restoration = 2.276
+  layer 16: mean restoration = 2.412
+  layer 17: mean restoration = 2.413
+  layer 18: mean restoration = 2.272
+  layer 19: mean restoration = 2.330
+  layer 20: mean restoration = 2.195
+  layer 21: mean restoration = 1.967
+  layer 22: mean restoration = 1.587
+  layer 23: mean restoration = 0.107
+  layer 24: mean restoration = 0.219
+  layer 25: mean restoration = 0.038
+  layer 26: mean restoration = -0.064
+  layer 27: mean restoration = 0.000
+
+
+-- Gemma-2-2b (3/3 length-matched pairs used) --
+  layer  0: mean restoration = 0.997
+  layer  1: mean restoration = 0.987
+  layer  2: mean restoration = 0.993
+  layer  3: mean restoration = 0.988
+  layer  4: mean restoration = 0.980
+  layer  5: mean restoration = 0.939
+  layer  6: mean restoration = 0.942
+  layer  7: mean restoration = 0.885
+  layer  8: mean restoration = 0.896
+  layer  9: mean restoration = 0.898
+  layer 10: mean restoration = 0.879
+  layer 11: mean restoration = 0.881
+  layer 12: mean restoration = 0.878
+  layer 13: mean restoration = 0.891
+  layer 14: mean restoration = 0.875
+  layer 15: mean restoration = 0.856
+  layer 16: mean restoration = 0.774
+  layer 17: mean restoration = 0.686
+  layer 18: mean restoration = 0.447
+  layer 19: mean restoration = 0.433
+  layer 20: mean restoration = 0.312
+  layer 21: mean restoration = 0.306
+  layer 22: mean restoration = 0.137
+  layer 23: mean restoration = 0.118
+  layer 24: mean restoration = 0.102
+  layer 25: mean restoration = 0.000
+
+
+-- Llama-3.2-1B (3/3 length-matched pairs used) --
+  layer  0: mean restoration = 1.032
+  layer  1: mean restoration = 1.089
+  layer  2: mean restoration = 1.098
+  layer  3: mean restoration = 1.290
+  layer  4: mean restoration = 1.192
+  layer  5: mean restoration = 1.172
+  layer  6: mean restoration = 1.110
+  layer  7: mean restoration = 1.107
+  layer  8: mean restoration = 1.072
+  layer  9: mean restoration = 0.887
+  layer 10: mean restoration = 0.806
+  layer 11: mean restoration = 0.467
+  layer 12: mean restoration = 0.370
+  layer 13: mean restoration = 0.058
+  layer 14: mean restoration = 0.072
+  layer 15: mean restoration = 0.000
+
+Ending Cell 22-----------------------------------------
+Executing Cell 23--------------------------------------
+Ending Cell 23-----------------------------------------
+Executing Cell 24--------------------------------------
+==============================================================================
+STEP 7: OOD STRESS TEST, ALL THREE FAMILIES
+==============================================================================
+
+-- Qwen2.5-1.5B --
+
+    baseline: code=    3.09  non_english=   34.07  corrupted= 1166.56
+
+     aligned: code=    3.08  non_english=   34.14  corrupted= 1174.74
+
+   unaligned: code=    4.58  non_english=   56.76  corrupted= 1484.70
+
+-- Gemma-2-2b --
+
+    baseline: code=    4.33  non_english=   96.19  corrupted= 3093.82
+
+     aligned: code=    4.33  non_english=   96.41  corrupted= 3142.93
+
+   unaligned: code=    5.43  non_english=  107.64  corrupted= 4404.68
+
+-- Llama-3.2-1B --
+
+    baseline: code=    5.07  non_english=   40.71  corrupted= 1265.59
+
+     aligned: code=    5.07  non_english=   40.78  corrupted= 1246.62
+
+   unaligned: code=    8.52  non_english=   86.54  corrupted= 1750.83
+
+Ending Cell 24-----------------------------------------
+Executing Cell 25--------------------------------------
+Ending Cell 25-----------------------------------------
+Executing Cell 26--------------------------------------
+==============================================================================
+STEP 8: MULTI-SEED SWEEP (N=15, 95% CI), ALL FAMILIES
+==============================================================================
+
+
+-- Qwen2.5-1.5B --
+  aligned   accuracy diff: mean=+0.00000  CI=[+0.00000, +0.00000]
+  unaligned accuracy diff: mean=-0.05446  CI=[-0.07428, -0.03463]
+
+
+-- Gemma-2-2b --
+  aligned   accuracy diff: mean=+0.00000  CI=[+0.00000, +0.00000]
+  unaligned accuracy diff: mean=-0.01749  CI=[-0.02754, -0.00744]
+
+
+-- Llama-3.2-1B --
+  aligned   accuracy diff: mean=+0.00000  CI=[+0.00000, +0.00000]
+  unaligned accuracy diff: mean=-0.04025  CI=[-0.05651, -0.02399]
+
+Ending Cell 26-----------------------------------------
+Executing Cell 27--------------------------------------
+Ending Cell 27-----------------------------------------
+Executing Cell 28--------------------------------------
+==============================================================================
+SECTION 2: ATTENTION-HEAD PERMUTATION (GQA-AWARE), ALL THREE FAMILIES
+==============================================================================
+
+-- Qwen2.5-1.5B: 12 query heads, 2 KV heads, group_size=6 --
+
+         aligned: max|logit diff| = 0.00e+00
+    unaligned_nc: max|logit diff| = 0.00e+00
+
+    unaligned_wg: max|logit diff| = 9.06e+00
+
+       Qwen2.5-1.5B/baseline | accuracy=0.4650  perplexity=   14.130  ECE=0.0807
+
+        Qwen2.5-1.5B/aligned | accuracy=0.4650  perplexity=   14.130  ECE=0.0807
+
+   Qwen2.5-1.5B/unaligned_nc | accuracy=0.4650  perplexity=   14.130  ECE=0.0807
+
+   Qwen2.5-1.5B/unaligned_wg | accuracy=0.4818  perplexity=   13.565  ECE=0.0944
+
+-- Gemma-2-2b: 8 query heads, 4 KV heads, group_size=2 --
+
+         aligned: max|logit diff| = 5.00e-01
+    unaligned_nc: max|logit diff| = 1.82e+01
+
+    unaligned_wg: max|logit diff| = 1.86e+01
+
+         Gemma-2-2b/baseline | accuracy=0.4655  perplexity=   26.088  ECE=0.0891
+
+          Gemma-2-2b/aligned | accuracy=0.4655  perplexity=   26.194  ECE=0.0732
+
+     Gemma-2-2b/unaligned_nc | accuracy=0.4667  perplexity=   25.955  ECE=0.0985
+
+     Gemma-2-2b/unaligned_wg | accuracy=0.4780  perplexity=   25.332  ECE=0.0936
+
+-- Llama-3.2-1B: 32 query heads, 8 KV heads, group_size=4 --
+
+         aligned: max|logit diff| = 1.25e-01
+    unaligned_nc: max|logit diff| = 6.31e+00
+    unaligned_wg: max|logit diff| = 1.28e+01
+
+       Llama-3.2-1B/baseline | accuracy=0.4292  perplexity=   21.268  ECE=0.0919
+
+        Llama-3.2-1B/aligned | accuracy=0.4292  perplexity=   21.282  ECE=0.0723
+
+   Llama-3.2-1B/unaligned_nc | accuracy=0.4405  perplexity=   21.303  ECE=0.0776
+
+   Llama-3.2-1B/unaligned_wg | accuracy=0.3252  perplexity=   72.358  ECE=0.0850
+  GPU mem [after head-permutation condition setup]: allocated=11.56GB  reserved=11.84GB  total=15.64GB
+
+Ending Cell 28-----------------------------------------
+Executing Cell 29--------------------------------------
+Ending Cell 29-----------------------------------------
+Executing Cell 30--------------------------------------
+==============================================================================
+SECTION 3: ALTERNATIVE PERTURBATION CONTROLS, ALL THREE FAMILIES
+==============================================================================
+(Conditions are built and battery-tested ONE AT A TIME below -- rather than
+ materializing a dict of ~10 perturbed variants up front -- so peak memory
+ only ever holds the base model plus whichever single condition is active.)
+
+-- Qwen2.5-1.5B --
+
+                    baseline | accuracy=0.4650  perplexity=   14.130  ECE=0.0807
+
+         aligned permutation | accuracy=0.4650  perplexity=   14.143  ECE=0.0993
+
+       local rotation (d_ff) | accuracy=0.0114  perplexity=328275.052  ECE=0.2804
+
+  GPU mem [  (offloaded ['Gemma-2-2b', 'Llama-3.2-1B'] to CPU for global rotation)]: allocated=3.86GB  reserved=3.93GB  total=15.64GB
+
+  global rotation (residual) | accuracy=0.0000  perplexity=9966011108795.271  ECE=0.8849
+
+  GPU mem [  (restored ['Gemma-2-2b', 'Llama-3.2-1B'] to GPU)]: allocated=11.56GB  reserved=11.58GB  total=15.64GB
+
+gaussian noise (sigma=0.05x) | accuracy=0.4525  perplexity=   14.152  ECE=0.1129
+
+gaussian noise (sigma=0.10x) | accuracy=0.4411  perplexity=   14.178  ECE=0.1294
+
+gaussian noise (sigma=0.25x) | accuracy=0.4536  perplexity=   14.512  ECE=0.0910
+
+       neuron deletion (10%) | accuracy=0.4806  perplexity=   13.957  ECE=0.0779
+
+       neuron deletion (25%) | accuracy=0.4423  perplexity=   14.128  ECE=0.1253
+
+       neuron deletion (50%) | accuracy=0.4329  perplexity=   14.496  ECE=0.1150
+
+-- Gemma-2-2b --
+
+                    baseline | accuracy=0.4655  perplexity=   26.088  ECE=0.0891
+
+         aligned permutation | accuracy=0.4655  perplexity=   26.162  ECE=0.0890
+
+       local rotation (d_ff) | accuracy=0.4655  perplexity=   35.022  ECE=0.1395
+
+  GPU mem [  (offloaded ['Qwen2.5-1.5B', 'Llama-3.2-1B'] to CPU for global rotation)]: allocated=6.01GB  reserved=6.03GB  total=15.64GB
+
+  global rotation (residual) | accuracy=0.0968  perplexity=1699058726.367  ECE=0.1644
+
+  GPU mem [  (restored ['Qwen2.5-1.5B', 'Llama-3.2-1B'] to GPU)]: allocated=11.56GB  reserved=11.58GB  total=15.64GB
+
+gaussian noise (sigma=0.05x) | accuracy=0.4655  perplexity=   26.061  ECE=0.1048
+
+gaussian noise (sigma=0.10x) | accuracy=0.4655  perplexity=   26.246  ECE=0.0880
+
+gaussian noise (sigma=0.25x) | accuracy=0.4655  perplexity=   26.423  ECE=0.0966
+
+       neuron deletion (10%) | accuracy=0.4780  perplexity=   26.368  ECE=0.1149
+
+       neuron deletion (25%) | accuracy=0.4655  perplexity=   26.593  ECE=0.1177
+
+       neuron deletion (50%) | accuracy=0.4530  perplexity=   27.323  ECE=0.1650
+
+-- Llama-3.2-1B --
+
+                    baseline | accuracy=0.4292  perplexity=   21.268  ECE=0.0919
+
+         aligned permutation | accuracy=0.4292  perplexity=   21.347  ECE=0.0713
+
+       local rotation (d_ff) | accuracy=0.2647  perplexity=   88.332  ECE=0.1047
+
+  GPU mem [  (offloaded ['Qwen2.5-1.5B', 'Gemma-2-2b'] to CPU for global rotation)]: allocated=3.25GB  reserved=3.32GB  total=15.64GB
+
+  global rotation (residual) | accuracy=0.0000  perplexity=107094.552  ECE=0.1093
+
+  GPU mem [  (restored ['Qwen2.5-1.5B', 'Gemma-2-2b'] to GPU)]: allocated=11.56GB  reserved=11.58GB  total=15.64GB
+
+gaussian noise (sigma=0.05x) | accuracy=0.4292  perplexity=   21.322  ECE=0.0721
+
+gaussian noise (sigma=0.10x) | accuracy=0.4292  perplexity=   21.172  ECE=0.0797
+
+gaussian noise (sigma=0.25x) | accuracy=0.4178  perplexity=   21.360  ECE=0.0992
+
+       neuron deletion (10%) | accuracy=0.4292  perplexity=   21.264  ECE=0.0895
+
+       neuron deletion (25%) | accuracy=0.4542  perplexity=   20.397  ECE=0.0860
+
+       neuron deletion (50%) | accuracy=0.4428  perplexity=   22.572  ECE=0.1136
+
+<Figure size 2145x550 with 3 Axes>
+  GPU mem [after Section 3]: allocated=11.56GB  reserved=11.58GB  total=15.64GB
+
+Ending Cell 30-----------------------------------------
+Executing Cell 31--------------------------------------
+Ending Cell 31-----------------------------------------
+Executing Cell 32--------------------------------------
+==============================================================================
+SECTION 4: IDENTITY BOUNDARY -- GRADED SYMMETRY VIOLATION, ALL FAMILIES
+==============================================================================
+
+-- Qwen2.5-1.5B --
+
+  violation=    0% | accuracy=0.4022 +/- 0.0427
+
+  violation=   10% | accuracy=0.4086 +/- 0.0335
+
+  violation=   20% | accuracy=0.3890 +/- 0.0294
+
+  violation=   40% | accuracy=0.3954 +/- 0.0322
+
+  violation=   60% | accuracy=0.3653 +/- 0.0359
+
+  violation=   80% | accuracy=0.4194 +/- 0.0290
+
+  violation=  100% | accuracy=0.4132 +/- 0.0349
+
+-- Gemma-2-2b --
+
+  violation=    0% | accuracy=0.4341 +/- 0.0256
+
+  violation=   10% | accuracy=0.4391 +/- 0.0462
+
+  violation=   20% | accuracy=0.4276 +/- 0.0271
+
+  violation=   40% | accuracy=0.4394 +/- 0.0140
+
+  violation=   60% | accuracy=0.4464 +/- 0.0122
+
+  violation=   80% | accuracy=0.4487 +/- 0.0149
+
+  violation=  100% | accuracy=0.4414 +/- 0.0204
+
+-- Llama-3.2-1B --
+
+  violation=    0% | accuracy=0.3820 +/- 0.0222
+
+  violation=   10% | accuracy=0.3778 +/- 0.0196
+
+  violation=   20% | accuracy=0.3708 +/- 0.0445
+
+  violation=   40% | accuracy=0.3858 +/- 0.0410
+
+  violation=   60% | accuracy=0.3938 +/- 0.0345
+
+  violation=   80% | accuracy=0.3790 +/- 0.0485
+
+  violation=  100% | accuracy=0.3657 +/- 0.0348
+
+<Figure size 770x550 with 1 Axes>
+Ending Cell 32-----------------------------------------
+Executing Cell 33--------------------------------------
+Ending Cell 33-----------------------------------------
+Executing Cell 34--------------------------------------
+==============================================================================
+SECTION 5: REPRESENTATION GEOMETRY, ALL FAMILIES
+==============================================================================
+
+Qwen2.5-1.5B: done (29 layers x 4 conditions)
+
+Gemma-2-2b: done (27 layers x 4 conditions)
+
+Llama-3.2-1B: done (17 layers x 4 conditions)
+
+Ending Cell 34-----------------------------------------
+Executing Cell 35--------------------------------------
+Ending Cell 35-----------------------------------------
+Executing Cell 36--------------------------------------
+==============================================================================
+SECTION 6: HARDER-TASK SURVIVAL -- FEW-SHOT ANTONYM COMPLETION
+==============================================================================
+
+    Qwen2.5-1.5B /   baseline: few-shot antonym top-1 accuracy = 1.000
+
+    Qwen2.5-1.5B /    aligned: few-shot antonym top-1 accuracy = 1.000
+
+    Qwen2.5-1.5B /  unaligned: few-shot antonym top-1 accuracy = 0.667
+
+      Gemma-2-2b /   baseline: few-shot antonym top-1 accuracy = 0.000
+
+      Gemma-2-2b /    aligned: few-shot antonym top-1 accuracy = 0.000
+
+      Gemma-2-2b /  unaligned: few-shot antonym top-1 accuracy = 0.000
+
+    Llama-3.2-1B /   baseline: few-shot antonym top-1 accuracy = 1.000
+
+    Llama-3.2-1B /    aligned: few-shot antonym top-1 accuracy = 1.000
+
+    Llama-3.2-1B /  unaligned: few-shot antonym top-1 accuracy = 0.000
+
+Ending Cell 36-----------------------------------------
+Executing Cell 37--------------------------------------
+Ending Cell 37-----------------------------------------
+Executing Cell 38--------------------------------------
+==============================================================================
+SECTION 7: SIGNIFICANCE TESTS (paired, over multi-seed sweep) + SUMMARY
+==============================================================================
+Qwen2.5-1.5B: paired t-test aligned-vs-unaligned accuracy diffs, t=5.89, p=3.93e-05
+Gemma-2-2b: paired t-test aligned-vs-unaligned accuracy diffs, t=3.73, p=2.22e-03
+Llama-3.2-1B: paired t-test aligned-vs-unaligned accuracy diffs, t=5.31, p=1.10e-04
+
+Summary table (accuracy delta from baseline, layer 4 ):
+           model    aligned  unaligned  gate-only
+    Qwen2.5-1.5B    +0.0000    -0.0954    -0.0627
+      Gemma-2-2b    +0.0000    -0.0136    -0.0239
+    Llama-3.2-1B    +0.0000    -0.0090    -0.0699
+
+Ending Cell 38-----------------------------------------
+Executing Cell 39--------------------------------------
+Ending Cell 39-----------------------------------------
+Executing Cell 40--------------------------------------
+condition                                |   Qwen2.5-1.5B |   Gemma-2-2b |   Llama-3.2-1B
+unaligned (layer 4, full battery)        |         +20.5% |        +2.9% |          +2.1%
+gate-only (layer 4, full battery)        |         +13.5% |        +5.1% |         +16.3%
+local rotation (d_ff, single-shot)       |         +97.6% |        +0.0% |         +38.3%
+global rotation (residual stream)        |        +100.0% |       +79.2% |        +100.0%
+neuron deletion (50%)                    |          +6.9% |        +2.7% |          -3.2%
+
+Ending Cell 40-----------------------------------------
+Executing Cell 41--------------------------------------
+Ending Cell 41-----------------------------------------
+Executing Cell 42--------------------------------------
+Chance / random-vector baseline (analytic):
+     Qwen2.5-1.5B: chance accuracy = 1/151936 = 6.58e-06   chance perplexity = 151936
+       Gemma-2-2b: chance accuracy = 1/256000 = 3.91e-06   chance perplexity = 256000
+     Llama-3.2-1B: chance accuracy = 1/128256 = 7.80e-06   chance perplexity = 128256
+
+How far each already-computed condition sits above the chance floor (multiples of chance):
+     Qwen2.5-1.5B: baseline=   70,649x chance | unaligned=   56,161x chance | local-rotation(theta=1)=    1,727x chance
+       Gemma-2-2b: baseline=  119,176x chance | unaligned=  115,685x chance | local-rotation(theta=1)=  119,176x chance
+     Llama-3.2-1B: baseline=   55,043x chance | unaligned=   53,885x chance | local-rotation(theta=1)=   33,951x chance
+
+Even Qwen2.5-1.5B's largest local-rotation drop (0.0114) is still ~1,727x the analytic chance floor -- the model has not been reduced to a random-vector baseline, it has lost the specific structure that gave it the remaining accuracy.
+
+Ending Cell 42-----------------------------------------
+Executing Cell 43--------------------------------------
+Ending Cell 43-----------------------------------------
+Executing Cell 44--------------------------------------
+Effect sizes (one-sample, against a null of zero accuracy change), N=15, real per-seed data:
+          model |     mean | sample SD |   Cohen d |  Hedges g
+   Qwen2.5-1.5B |  -0.0545 |    0.0358 |    -1.521 |    -1.438
+     Gemma-2-2b |  -0.0175 |    0.0181 |    -0.964 |    -0.911
+   Llama-3.2-1B |  -0.0402 |    0.0294 |    -1.371 |    -1.296
+
+Ending Cell 44-----------------------------------------
+Executing Cell 45--------------------------------------
+Ending Cell 45-----------------------------------------
+Executing Cell 46--------------------------------------
+One-way ANOVA across models (unaligned accuracy-diff, N=15/model, real data): F=6.327, p=0.003966
+
+Pairwise Welch t-tests, Bonferroni-corrected alpha = 0.05/3 = 0.0167
+  Qwen2.5-1.5B vs Gemma-2-2b: t=-3.567, p=0.001848  -> significant after Bonferroni
+  Qwen2.5-1.5B vs Llama-3.2-1B: t=-1.188, p=0.245  -> not significant after Bonferroni
+  Gemma-2-2b vs Llama-3.2-1B: t=2.554, p=0.01764  -> not significant after Bonferroni
+
+Ending Cell 46-----------------------------------------
+Executing Cell 47--------------------------------------
+Ending Cell 47-----------------------------------------
+Executing Cell 48--------------------------------------
+Ending Cell 48-----------------------------------------
+Executing Cell 49--------------------------------------
+==============================================================================
+PART 3, STEP A: SCALING -- DOES EXACTNESS DEPEND ON MODEL SCALE?
+==============================================================================
+    Qwen2.5-1.5B: 1.54B params | aligned delta=+0.00000  unaligned delta=-0.09536
+      Gemma-2-2b: 2.61B params | aligned delta=+0.00000  unaligned delta=-0.01364
+    Llama-3.2-1B: 1.24B params | aligned delta=+0.00000  unaligned delta=-0.00903
+
+Expected: aligned delta ~0 REGARDLESS of scale (it's an exact algebraic
+identity, not a statistical property that could wash out or emerge with scale).
+
+Ending Cell 49-----------------------------------------
+Executing Cell 50--------------------------------------
+==============================================================================
+PART 3, STEP B: CROSS-FAMILY ARCHITECTURE DIFFERENCES
+==============================================================================
+    Qwen2.5-1.5B: activation=          silu  GQA ratio=12:2  sliding_window=None
+      Gemma-2-2b: activation=gelu_pytorch_tanh  GQA ratio=8:4  sliding_window=4096
+    Llama-3.2-1B: activation=          silu  GQA ratio=32:8  sliding_window=None
+
+Gemma-2 alternates full and sliding-window attention across layers (see its
+config's `sliding_window` / layer_types). If TARGET_LAYER for Gemma-2 falls on a
+sliding-window layer, the permutation math above is UNCHANGED (windowing affects
+which keys are attended to, not the linear-algebra structure of Q/K/V/O), but
+it's worth re-running STEP 2 with TARGET_LAYER set to both a full-attention and a
+sliding-window layer index to confirm empirically -- check
+`models['Gemma-2-2b'].config` for the pattern before picking layers.
+
+Ending Cell 50-----------------------------------------
+Executing Cell 51--------------------------------------
+Ending Cell 51-----------------------------------------
+Executing Cell 52--------------------------------------
+Ending Cell 52-----------------------------------------
+Executing Cell 53--------------------------------------
+==============================================================================
+PART 3, STEP C: TRAINING-TIME SYMMETRY PRESERVATION
+==============================================================================
+Memory budget for this cell (why the schedule below looks the way it does):
+  - the two IDLE checkpoints are offloaded to CPU for the whole loop body,
+    same fix as the global-rotation step in Section 3 -- they contribute
+    ~0GB to GPU while a third model is under test.
+  - within that, the ACTIVE model m is itself only needed on GPU at the two
+    instants it gets deep-copied (start of baseline, start of aligned); it
+    contributes nothing to the forward/backward passes that follow. Parking
+    it on CPU for the duration of each fine-tune -- not just deleting the
+    finished copy afterward -- caps sustained peak GPU use at ~2x the active
+    model's weight size (training copy + its own .grad buffers), instead of
+    ~3x (m + copy weights + copy grad) if m stayed resident throughout.
+    For Gemma-2-2b (~5.2GB/copy) that's the difference between ~10.4GB and
+    ~15.7GB against this T4's ~14.6GB usable ceiling -- i.e. the difference
+    between comfortable headroom and a guaranteed OOM.
+  GPU mem [before fine-tuning checks]: allocated=11.67GB  reserved=11.93GB  total=15.64GB
+
+-- Qwen2.5-1.5B --
+
+  GPU mem [  (offloaded ['Gemma-2-2b', 'Llama-3.2-1B'] to CPU for fine-tuning check)]: allocated=3.96GB  reserved=4.06GB  total=15.64GB
+
+  GPU mem [after baseline fine-tuning check for Qwen2.5-1.5B]: allocated=0.89GB  reserved=0.99GB  total=15.64GB
+
+  GPU mem [after aligned fine-tuning check for Qwen2.5-1.5B]: allocated=0.89GB  reserved=0.99GB  total=15.64GB
+  max|logit diff| between fine-tuned-baseline and fine-tuned-(pre-permuted-aligned): 5.00e-01
+  (expect small at this dtype's noise floor: permutation commutes with full-batch SGD steps)
+
+  GPU mem [after restoring all three models to GPU]: allocated=11.68GB  reserved=11.71GB  total=15.64GB
+
+-- Gemma-2-2b --
+
+  GPU mem [  (offloaded ['Qwen2.5-1.5B', 'Llama-3.2-1B'] to CPU for fine-tuning check)]: allocated=6.12GB  reserved=6.24GB  total=15.64GB
+
+  GPU mem [after baseline fine-tuning check for Gemma-2-2b]: allocated=0.89GB  reserved=1.01GB  total=15.64GB
+
+  GPU mem [after aligned fine-tuning check for Gemma-2-2b]: allocated=0.90GB  reserved=1.03GB  total=15.64GB
+  max|logit diff| between fine-tuned-baseline and fine-tuned-(pre-permuted-aligned): 6.25e-01
+  (expect small at this dtype's noise floor: permutation commutes with full-batch SGD steps)
+
+  GPU mem [after restoring all three models to GPU]: allocated=11.69GB  reserved=11.71GB  total=15.64GB
+
+-- Llama-3.2-1B --
+
+  GPU mem [  (offloaded ['Qwen2.5-1.5B', 'Gemma-2-2b'] to CPU for fine-tuning check)]: allocated=3.37GB  reserved=3.53GB  total=15.64GB
+
+  GPU mem [after baseline fine-tuning check for Llama-3.2-1B]: allocated=0.89GB  reserved=1.03GB  total=15.64GB
+
+  GPU mem [after aligned fine-tuning check for Llama-3.2-1B]: allocated=0.89GB  reserved=1.03GB  total=15.64GB
+  max|logit diff| between fine-tuned-baseline and fine-tuned-(pre-permuted-aligned): 3.44e-01
+  (expect small at this dtype's noise floor: permutation commutes with full-batch SGD steps)
+
+  GPU mem [after restoring all three models to GPU]: allocated=11.68GB  reserved=11.71GB  total=15.64GB
+
+Ending Cell 53-----------------------------------------
+Executing Cell 54--------------------------------------
+Ending Cell 54-----------------------------------------
+Executing Cell 55--------------------------------------
+==============================================================================
+PART 3, STEP D: CROSS-MODEL REPRESENTATIONAL SIMILARITY (DIFFERENT FAMILIES)
+==============================================================================
+
+Cross-family linear CKA on final hidden states (same input text, different models,
+each text mean-pooled over its own tokenizer's token axis -- see fix note above):
+  CKA(Qwen2.5-1.5B, Gemma-2-2b) = 0.9459
+  CKA(Qwen2.5-1.5B, Llama-3.2-1B) = 0.9732
+  CKA(Gemma-2-2b, Llama-3.2-1B) = 0.9576
+
+Unlike the within-model aligned-permutation case, there is no reason to expect
+these values near 1.0 -- independently trained models with different objectives,
+data, and architectures are not required to converge to similar representational
+geometry. Any elevated similarity here is an empirical finding about convergent
+representation learning (Kornblith et al.'s original question), not a symmetry check.
+
+Ending Cell 55-----------------------------------------
+Executing Cell 56--------------------------------------
+Ending Cell 56-----------------------------------------
+Executing Cell 57--------------------------------------
+==============================================================================
+PART 3, STEP E: LONG-CONTEXT EVALUATION
+==============================================================================
+
+-- Qwen2.5-1.5B (660 tokens) --
+
+    baseline: perplexity over full long context =     1.110
+
+     aligned: perplexity over full long context =     1.110
+
+   unaligned: perplexity over full long context =     1.118
+
+-- Gemma-2-2b (641 tokens) --
+
+    baseline: perplexity over full long context =     1.128
+
+     aligned: perplexity over full long context =     1.128
+
+   unaligned: perplexity over full long context =     1.140
+
+-- Llama-3.2-1B (661 tokens) --
+
+    baseline: perplexity over full long context =     1.127
+
+     aligned: perplexity over full long context =     1.126
+
+   unaligned: perplexity over full long context =     1.133
+
+Ending Cell 57-----------------------------------------
+Executing Cell 58--------------------------------------
+Ending Cell 58-----------------------------------------
+Executing Cell 59--------------------------------------
+Qwen2.5-1.5B {'num_heads': 12, 'num_kv_heads': 2, 'head_dim': 128, 'group_size': 6}
+Gemma-2-2b {'num_heads': 8, 'num_kv_heads': 4, 'head_dim': 256, 'group_size': 2}
+Llama-3.2-1B {'num_heads': 32, 'num_kv_heads': 8, 'head_dim': 64, 'group_size': 4}
+
+Ending Cell 59-----------------------------------------
+Executing Cell 60--------------------------------------
+Ending Cell 60-----------------------------------------
+Executing Cell 61--------------------------------------
+==============================================================================
+PART 4: CONTINUOUS ROTATION-ANGLE SWEEP, ALL FAMILIES
+==============================================================================
+
+-- Qwen2.5-1.5B --
+
+  theta=0.00: accuracy=0.4650
+
+  theta=0.10: accuracy=0.0000
+
+  theta=0.25: accuracy=0.0000
+
+  theta=0.50: accuracy=0.0114
+
+  theta=0.75: accuracy=0.0114
+
+  theta=1.00: accuracy=0.0114
+
+  GPU mem [after rotation sweep for Qwen2.5-1.5B]: allocated=11.87GB  reserved=11.92GB  total=15.64GB
+
+-- Gemma-2-2b --
+
+  theta=0.00: accuracy=0.4655
+
+  theta=0.10: accuracy=0.4028
+
+  theta=0.25: accuracy=0.4380
+
+  theta=0.50: accuracy=0.4644
+
+  theta=0.75: accuracy=0.4042
+
+  theta=1.00: accuracy=0.4655
+
+  GPU mem [after rotation sweep for Gemma-2-2b]: allocated=11.87GB  reserved=11.92GB  total=15.64GB
+
+-- Llama-3.2-1B --
+
+  theta=0.00: accuracy=0.4292
+
+  theta=0.10: accuracy=0.0114
+
+  theta=0.25: accuracy=0.0364
+
+  theta=0.50: accuracy=0.1494
+
+  theta=0.75: accuracy=0.2645
+
+  theta=1.00: accuracy=0.2522
+
+  GPU mem [after rotation sweep for Llama-3.2-1B]: allocated=11.87GB  reserved=11.92GB  total=15.64GB
+
+<Figure size 770x550 with 1 Axes>
+Ending Cell 61-----------------------------------------
+Executing Cell 62--------------------------------------
+==============================================================================
+FIG. 1 QUANTITATIVE READOUT -- computed live from rotation_sweep_records, nothing
+transcribed by hand
+==============================================================================
+   Qwen2.5-1.5B: baseline=0.4650  final(theta=1.00)=0.0114  rel.drop=97.6%  dip@theta=0.10(acc=0.0000)  sign-changes-in-slope=3  non-monotonic=True  recovery=2.4%
+     Gemma-2-2b: baseline=0.4655  final(theta=1.00)=0.4655  rel.drop=0.0%  dip@theta=0.10(acc=0.4028)  sign-changes-in-slope=3  non-monotonic=True  recovery=100.0%
+   Llama-3.2-1B: baseline=0.4292  final(theta=1.00)=0.2522  rel.drop=41.2%  dip@theta=0.10(acc=0.0114)  sign-changes-in-slope=2  non-monotonic=True  recovery=57.6%
+
+Non-monotonic model(s) under this sweep (sign changes in the accuracy-vs-theta slope): ['Qwen2.5-1.5B', 'Gemma-2-2b', 'Llama-3.2-1B']
+Smallest relative drop at theta=1.0: Gemma-2-2b (0.0%) -- most rotation-invariant
+Largest relative drop at theta=1.0:  Qwen2.5-1.5B (97.6%) -- least rotation-invariant
+
+Everything below that discusses 'the Qwen/Gemma discrepancy' or 'Llama's non-monotonic
+curve' refers to whichever models this classification actually names above -- if a
+different TARGET_LAYER, seed, or checkpoint set produces a different pattern, this cell
+(and the labels used from here on) will say so rather than silently keeping a stale claim.
+
+Ending Cell 62-----------------------------------------
+Executing Cell 63--------------------------------------
+Ending Cell 63-----------------------------------------
+Executing Cell 64--------------------------------------
+==============================================================================
+REAL CHECK #1: DOES A REAL POST-NORM SUBMODULE CAUSALLY REDUCE ROTATION SENSITIVITY?
+==============================================================================
+Gemma-2-2b layer 4 has post_feedforward_layernorm: True
+(If this reads False, the installed transformers version's Gemma2DecoderLayer doesn't
+ expose the sandwich-norm submodule under this attribute name -- check `dir(gemma_layer)`
+ before trusting anything below; the bypass step is skipped automatically either way.)
+
+-- Gemma-2-2b, post-norm ON (native) --
+
+  theta=0.10: cos.sim=0.6679
+  theta=0.25: cos.sim=0.6690
+  theta=0.50: cos.sim=0.6887
+  theta=0.75: cos.sim=0.6905
+  theta=1.00: cos.sim=0.6800
+
+-- Gemma-2-2b, post-norm BYPASSED (real submodule, real weights, forward replaced with identity) --
+
+  theta=0.10: cos.sim=0.9199
+  theta=0.25: cos.sim=0.9292
+  theta=0.50: cos.sim=0.9736
+  theta=0.75: cos.sim=0.9831
+  theta=1.00: cos.sim=0.9878
+
+-- Qwen2.5-1.5B (native -- no post-feedforward-norm submodule in this architecture) --
+
+  theta=0.10: cos.sim=0.2609
+  theta=0.25: cos.sim=0.2693
+  theta=0.50: cos.sim=0.3450
+  theta=0.75: cos.sim=0.3990
+  theta=1.00: cos.sim=0.4189
+
+-- Llama-3.2-1B (native -- no post-feedforward-norm submodule in this architecture) --
+
+  theta=0.10: cos.sim=0.2283
+  theta=0.25: cos.sim=0.2678
+  theta=0.50: cos.sim=0.5036
+  theta=0.75: cos.sim=0.5516
+  theta=1.00: cos.sim=0.5637
+
+<Figure size 825x550 with 1 Axes>
+
+Prediction if post-norm is doing real causal work: the BYPASSED curve sits BELOW the
+native (post-norm ON) curve at every theta, and shifts toward the Qwen/Llama native
+curves specifically. If the BYPASSED curve barely moves, post-norm alone doesn't explain
+Gemma's invariance and Real Check #2 below (dilution ratio) is doing more of the work.
+
+Ending Cell 64-----------------------------------------
+Executing Cell 65--------------------------------------
+Ending Cell 65-----------------------------------------
+Executing Cell 66--------------------------------------
+==============================================================================
+REAL CHECK #2: DOES THE DILUTION RATIO PREDICT ROTATION-INVARIANCE ON REAL WEIGHTS?
+==============================================================================
+
+-- Qwen2.5-1.5B --
+
+  theta=0.10: branch/residual ratio=4.6735   layer-output cos.sim=0.2609
+  theta=0.25: branch/residual ratio=4.5249   layer-output cos.sim=0.2693
+  theta=0.50: branch/residual ratio=3.5782   layer-output cos.sim=0.3450
+  theta=0.75: branch/residual ratio=2.9136   layer-output cos.sim=0.3990
+  theta=1.00: branch/residual ratio=2.5655   layer-output cos.sim=0.4189
+
+-- Gemma-2-2b --
+
+  theta=0.10: branch/residual ratio=0.3200   layer-output cos.sim=0.6679
+  theta=0.25: branch/residual ratio=0.2933   layer-output cos.sim=0.6690
+  theta=0.50: branch/residual ratio=0.1502   layer-output cos.sim=0.6887
+  theta=0.75: branch/residual ratio=0.1099   layer-output cos.sim=0.6905
+  theta=1.00: branch/residual ratio=0.0885   layer-output cos.sim=0.6800
+
+-- Llama-3.2-1B --
+
+  theta=0.10: branch/residual ratio=2.0666   layer-output cos.sim=0.2283
+  theta=0.25: branch/residual ratio=1.9794   layer-output cos.sim=0.2678
+  theta=0.50: branch/residual ratio=1.3922   layer-output cos.sim=0.5036
+  theta=0.75: branch/residual ratio=1.2537   layer-output cos.sim=0.5516
+  theta=1.00: branch/residual ratio=1.1837   layer-output cos.sim=0.5637
+
+<Figure size 825x550 with 1 Axes>
+Ending Cell 66-----------------------------------------
+Executing Cell 67--------------------------------------
+Ending Cell 67-----------------------------------------
+Executing Cell 68--------------------------------------
+Ending Cell 68-----------------------------------------
+Executing Cell 69--------------------------------------
+==============================================================================
+FURTHER EXPERIMENT A (REAL): ROPE ABLATION AND HEAD KNOCKOUT, ACTUAL CHECKPOINTS
+==============================================================================
+
+
+-- Qwen2.5-1.5B --
+  RoPE modules patched: 1  |  cos.sim(native RoPE, RoPE nulled) = 0.6878
+
+  head-knockout keep_fraction=1.00 (12/12 heads active), MLP rotated theta=1.0: cos.sim(true baseline, treated) = 0.2669
+  head-knockout keep_fraction=0.75 (9/12 heads active), MLP rotated theta=1.0: cos.sim(true baseline, treated) = 0.2659
+
+  head-knockout keep_fraction=0.50 (6/12 heads active), MLP rotated theta=1.0: cos.sim(true baseline, treated) = 0.2662
+  head-knockout keep_fraction=0.25 (3/12 heads active), MLP rotated theta=1.0: cos.sim(true baseline, treated) = 0.2723
+
+  (Qwen2.5-1.5B experiment A total: 35.0s)
+  GPU mem [after Qwen2.5-1.5B experiment A]: allocated=11.87GB  reserved=12.29GB  total=15.64GB
+
+
+-- Gemma-2-2b --
+  RoPE modules patched: 1  |  cos.sim(native RoPE, RoPE nulled) = 0.9064
+
+  head-knockout keep_fraction=1.00 (8/8 heads active), MLP rotated theta=1.0: cos.sim(true baseline, treated) = 0.7884
+
+  head-knockout keep_fraction=0.75 (6/8 heads active), MLP rotated theta=1.0: cos.sim(true baseline, treated) = 0.7815
+
+  head-knockout keep_fraction=0.50 (4/8 heads active), MLP rotated theta=1.0: cos.sim(true baseline, treated) = 0.7683
+
+  head-knockout keep_fraction=0.25 (2/8 heads active), MLP rotated theta=1.0: cos.sim(true baseline, treated) = 0.7532
+  (Gemma-2-2b experiment A total: 40.5s)
+  GPU mem [after Gemma-2-2b experiment A]: allocated=11.87GB  reserved=12.38GB  total=15.64GB
+
+
+-- Llama-3.2-1B --
+  RoPE modules patched: 1  |  cos.sim(native RoPE, RoPE nulled) = 0.7907
+
+  head-knockout keep_fraction=1.00 (32/32 heads active), MLP rotated theta=1.0: cos.sim(true baseline, treated) = 0.5438
+  head-knockout keep_fraction=0.75 (24/32 heads active), MLP rotated theta=1.0: cos.sim(true baseline, treated) = 0.5490
+
+  head-knockout keep_fraction=0.50 (16/32 heads active), MLP rotated theta=1.0: cos.sim(true baseline, treated) = 0.5416
+  head-knockout keep_fraction=0.25 (8/32 heads active), MLP rotated theta=1.0: cos.sim(true baseline, treated) = 0.5526
+
+  (Llama-3.2-1B experiment A total: 31.0s)
+  GPU mem [after Llama-3.2-1B experiment A]: allocated=11.87GB  reserved=12.21GB  total=15.64GB
+
+<Figure size 825x550 with 1 Axes>
+Ending Cell 69-----------------------------------------
+Executing Cell 70--------------------------------------
+Ending Cell 70-----------------------------------------
+Executing Cell 71--------------------------------------
+Ending Cell 71-----------------------------------------
+Executing Cell 72--------------------------------------
+==============================================================================
+POINT 3 FOLLOW-UP: ROTATION ON SIMPLE NON-LINGUISTIC TASKS (DIGIT COPY / ADD)
+==============================================================================
+
+     Qwen2.5-1.5B: baseline digit-copy=0.000  digit-add=0.000
+
+      theta=0.00: digit-copy=0.000  digit-add=0.000
+
+      theta=0.10: digit-copy=0.000  digit-add=0.000
+
+      theta=0.25: digit-copy=0.000  digit-add=0.000
+
+      theta=0.50: digit-copy=0.000  digit-add=0.000
+
+      theta=0.75: digit-copy=0.000  digit-add=0.000
+
+      theta=1.00: digit-copy=0.500  digit-add=0.000
+  (Qwen2.5-1.5B follow-up total: 125.2s)
+  GPU mem [after Qwen2.5-1.5B follow-up]: allocated=11.95GB  reserved=12.39GB  total=15.64GB
+
+       Gemma-2-2b: baseline digit-copy=0.000  digit-add=0.000
+
+      theta=0.00: digit-copy=0.000  digit-add=0.000
+
+      theta=0.10: digit-copy=0.000  digit-add=0.000
+
+      theta=0.25: digit-copy=0.000  digit-add=0.000
+
+      theta=0.50: digit-copy=0.000  digit-add=0.000
+
+      theta=0.75: digit-copy=0.000  digit-add=0.000
+
+      theta=1.00: digit-copy=0.000  digit-add=0.000
+  (Gemma-2-2b follow-up total: 145.3s)
+  GPU mem [after Gemma-2-2b follow-up]: allocated=12.00GB  reserved=12.59GB  total=15.64GB
+
+     Llama-3.2-1B: baseline digit-copy=0.000  digit-add=0.000
+
+      theta=0.00: digit-copy=0.000  digit-add=0.000
+
+      theta=0.10: digit-copy=0.400  digit-add=0.000
+
+      theta=0.25: digit-copy=0.600  digit-add=0.000
+
+      theta=0.50: digit-copy=0.000  digit-add=0.250
+
+      theta=0.75: digit-copy=0.000  digit-add=0.000
+
+      theta=1.00: digit-copy=0.000  digit-add=0.188
+  (Llama-3.2-1B follow-up total: 114.8s)
+  GPU mem [after Llama-3.2-1B follow-up]: allocated=11.97GB  reserved=12.43GB  total=15.64GB
+
+<Figure size 1430x528 with 2 Axes>
+
+          model |       task |  baseline | theta=1.00 | rel. drop
+   Qwen2.5-1.5B | digit-copy |     0.000 |      0.500 |     nan%
+   Qwen2.5-1.5B |  digit-add |     0.000 |      0.000 |     nan%
+     Gemma-2-2b | digit-copy |     0.000 |      0.000 |     nan%
+     Gemma-2-2b |  digit-add |     0.000 |      0.000 |     nan%
+   Llama-3.2-1B | digit-copy |     0.000 |      0.000 |     nan%
+   Llama-3.2-1B |  digit-add |     0.000 |      0.188 |     nan%
+
+Ending Cell 72-----------------------------------------
+Executing Cell 73--------------------------------------
+Ending Cell 73-----------------------------------------
+Executing Cell 74--------------------------------------
+Ending Cell 74-----------------------------------------
+Executing Cell 75--------------------------------------
+==============================================================================
+FURTHER EXPERIMENT B (REAL): DOES KNOCKING OUT ONE MEMBER OF A REAL NEAR-DUPLICATE
+NEURON PAIR COST LESS THAN KNOCKING OUT AN EQUAL-COUNT RANDOM SET?
+==============================================================================
+If redundant circuits genuinely back each other up, removing ONE member of a pair the
+model's own weights already treat as near-duplicates should hurt LESS than removing an
+equal-sized RANDOM set of neurons (unlikely to have a ready-made backup).
+
+
+-- Qwen2.5-1.5B -- 52/8960 neurons knocked out (mean pair cos.sim=0.577)
+  baseline accuracy:                    0.4650
+  knockout one-of-each redundant pair:  0.4650  (drop=+0.0000)
+  knockout equal-count random neurons:  0.4525  (drop=+0.0125)
+  (Qwen2.5-1.5B experiment B total: 2.2s)
+
+
+-- Gemma-2-2b -- 52/9216 neurons knocked out (mean pair cos.sim=0.665)
+  baseline accuracy:                    0.4655
+  knockout one-of-each redundant pair:  0.4780  (drop=-0.0125)
+  knockout equal-count random neurons:  0.4655  (drop=+0.0000)
+  (Gemma-2-2b experiment B total: 3.3s)
+
+
+-- Llama-3.2-1B -- 32/8192 neurons knocked out (mean pair cos.sim=0.828)
+  baseline accuracy:                    0.4292
+  knockout one-of-each redundant pair:  0.4292  (drop=+0.0000)
+  knockout equal-count random neurons:  0.4292  (drop=+0.0000)
+  (Llama-3.2-1B experiment B total: 1.6s)
+
+<Figure size 825x550 with 1 Axes>
+Ending Cell 75-----------------------------------------
+Executing Cell 76--------------------------------------
+Ending Cell 76-----------------------------------------
+Executing Cell 77--------------------------------------
+==============================================================================
+FURTHER EXPERIMENT C (REAL): DOWN_PROJ SINGULAR-VALUE SPECTRUM + CAUSAL
+LOW-RANK-TRUNCATION ABLATION, ACTUAL CHECKPOINTS
+==============================================================================
+          model |    down_proj shape | full rank |  effective rank | % of full
+
+   Qwen2.5-1.5B |       (1536, 8960) |      1536 |          1400.3 |     91.2%
+
+     Gemma-2-2b |       (2304, 9216) |      2304 |          2078.2 |     90.2%
+
+   Llama-3.2-1B |       (2048, 8192) |      2048 |          1791.5 |     87.5%
+
+<Figure size 825x550 with 1 Axes>
+
+-- Qwen2.5-1.5B -- truncated to rank 350 (25% of effective rank 1400) --
+  rank-truncated baseline accuracy: 0.4454 (full-rank baseline: 0.4650)
+  theta=0.00: accuracy=0.4454
+  theta=0.10: accuracy=0.0744
+  theta=0.25: accuracy=0.0630
+  theta=0.50: accuracy=0.1121
+  theta=0.75: accuracy=0.2308
+  theta=1.00: accuracy=0.2104
+  (Qwen2.5-1.5B rank ablation total: 139.7s)
+  GPU mem [after Qwen2.5-1.5B rank ablation]: allocated=11.87GB  reserved=12.53GB  total=15.64GB
+
+
+-- Gemma-2-2b -- truncated to rank 520 (25% of effective rank 2078) --
+  rank-truncated baseline accuracy: 0.4655 (full-rank baseline: 0.4655)
+  theta=0.00: accuracy=0.4655
+  theta=0.10: accuracy=0.4780
+  theta=0.25: accuracy=0.4530
+  theta=0.50: accuracy=0.4655
+  theta=0.75: accuracy=0.4419
+  theta=1.00: accuracy=0.4428
+  (Gemma-2-2b rank ablation total: 168.0s)
+  GPU mem [after Gemma-2-2b rank ablation]: allocated=11.87GB  reserved=12.55GB  total=15.64GB
+
+
+-- Llama-3.2-1B -- truncated to rank 448 (25% of effective rank 1792) --
+  rank-truncated baseline accuracy: 0.4303 (full-rank baseline: 0.4292)
+  theta=0.00: accuracy=0.4303
+  theta=0.10: accuracy=0.3451
+  theta=0.25: accuracy=0.3333
+  theta=0.50: accuracy=0.3116
+  theta=0.75: accuracy=0.3574
+  theta=1.00: accuracy=0.3963
+  (Llama-3.2-1B rank ablation total: 128.8s)
+  GPU mem [after Llama-3.2-1B rank ablation]: allocated=11.87GB  reserved=12.43GB  total=15.64GB
+
+<Figure size 1430x528 with 2 Axes>
+Ending Cell 77-----------------------------------------
+Executing Cell 78--------------------------------------
+Ending Cell 78-----------------------------------------
+Executing Cell 79--------------------------------------
+==============================================================================
+POINT 4 -- REAL PERMUTATION-ORBIT TEST ON ACTUAL CAPTURED ACTIVATIONS
+==============================================================================
+Is each model's own best-accuracy nonzero-theta point (its 'recovery' angle, per Fig. 1's
+live readout) a near-PERMUTATION of the baseline hidden state, or just a different point
+in activation space that the readout happens to still handle correctly?
+
+
+-- Qwen2.5-1.5B -- probing theta=0.50 (this model's own best-accuracy non-zero theta) --
+  identity-aligned (no permutation) neuron cos.sim:     0.1788
+  BEST-permutation-aligned neuron cos.sim (Hungarian):  0.4955
+  (Qwen2.5-1.5B permutation-orbit test total: 50.1s)
+
+
+-- Gemma-2-2b -- probing theta=1.00 (this model's own best-accuracy non-zero theta) --
+  identity-aligned (no permutation) neuron cos.sim:     0.0015
+  BEST-permutation-aligned neuron cos.sim (Hungarian):  0.4881
+  (Gemma-2-2b permutation-orbit test total: 55.9s)
+
+
+-- Llama-3.2-1B -- probing theta=0.75 (this model's own best-accuracy non-zero theta) --
+  identity-aligned (no permutation) neuron cos.sim:     0.0272
+  BEST-permutation-aligned neuron cos.sim (Hungarian):  0.4972
+  (Llama-3.2-1B permutation-orbit test total: 47.0s)
+
+<Figure size 770x550 with 1 Axes>
+Ending Cell 79-----------------------------------------
+Executing Cell 80--------------------------------------
+Ending Cell 80-----------------------------------------
+Executing Cell 81--------------------------------------
+Ending Cell 81-----------------------------------------
+Executing Cell 82--------------------------------------
+==============================================================================
+POINT 4: LAYER-WISE CKA + ATTENTION ENTROPY UNDER THE ROTATION SWEEP
+==============================================================================
+
+-- Qwen2.5-1.5B --
+  GPU mem [before Qwen2.5-1.5B]: allocated=11.87GB  reserved=11.92GB  total=15.64GB
+
+  baseline attention entropy (layer 5): 0.734 nats
+
+  theta=0.10: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9653
+  theta=0.25: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9659
+  theta=0.50: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9691
+  theta=0.75: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9686
+  theta=1.00: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9684
+  (Qwen2.5-1.5B CKA/entropy total: 111.4s)
+  GPU mem [after Qwen2.5-1.5B]: allocated=11.87GB  reserved=12.03GB  total=15.64GB
+
+-- Gemma-2-2b --
+  GPU mem [before Gemma-2-2b]: allocated=11.87GB  reserved=11.92GB  total=15.64GB
+
+  baseline attention entropy (layer 5): 0.914 nats
+
+  theta=0.10: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9900
+  theta=0.25: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9904
+  theta=0.50: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9950
+  theta=0.75: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9951
+  theta=1.00: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9950
+  (Gemma-2-2b CKA/entropy total: 136.2s)
+  GPU mem [after Gemma-2-2b]: allocated=11.87GB  reserved=12.07GB  total=15.64GB
+
+-- Llama-3.2-1B --
+  GPU mem [before Llama-3.2-1B]: allocated=11.87GB  reserved=11.92GB  total=15.64GB
+
+  baseline attention entropy (layer 5): 0.727 nats
+
+  theta=0.10: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9880
+  theta=0.25: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9860
+  theta=0.50: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9926
+  theta=0.75: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9941
+  theta=1.00: CKA at rotated layer 4 = 1.0000, mean CKA over downstream layers = 0.9926
+  (Llama-3.2-1B CKA/entropy total: 106.3s)
+  GPU mem [after Llama-3.2-1B]: allocated=11.87GB  reserved=12.05GB  total=15.64GB
+
+<Figure size 1760x506 with 4 Axes>
+<Figure size 1760x506 with 3 Axes>
+<Figure size 660x495 with 1 Axes>
+Ending Cell 82-----------------------------------------
+Executing Cell 83--------------------------------------
+Ending Cell 83-----------------------------------------
+Executing Cell 84--------------------------------------
+Ending Cell 84-----------------------------------------
+Executing Cell 85--------------------------------------
+==============================================================================
+PART 5: NUMERIC CHECK -- SCALING SYMMETRY DOES NOT HOLD FOR SiLU/GeGLU/GELU
+==============================================================================
+
+    Qwen2.5-1.5B  alpha=1.01: max|logit diff| = 0.4844  (nonzero and growing with |alpha-1| confirms non-homogeneity)
+    Qwen2.5-1.5B  alpha=1.10: max|logit diff| = 1.6562  (nonzero and growing with |alpha-1| confirms non-homogeneity)
+
+    Qwen2.5-1.5B  alpha=1.50: max|logit diff| = 6.6875  (nonzero and growing with |alpha-1| confirms non-homogeneity)
+    Qwen2.5-1.5B  alpha=2.00: max|logit diff| = 8.0000  (nonzero and growing with |alpha-1| confirms non-homogeneity)
+
+      Gemma-2-2b  alpha=1.01: max|logit diff| = 0.6875  (nonzero and growing with |alpha-1| confirms non-homogeneity)
+      Gemma-2-2b  alpha=1.10: max|logit diff| = 1.7500  (nonzero and growing with |alpha-1| confirms non-homogeneity)
+
+      Gemma-2-2b  alpha=1.50: max|logit diff| = 4.5000  (nonzero and growing with |alpha-1| confirms non-homogeneity)
+      Gemma-2-2b  alpha=2.00: max|logit diff| = 6.5625  (nonzero and growing with |alpha-1| confirms non-homogeneity)
+
+    Llama-3.2-1B  alpha=1.01: max|logit diff| = 0.3125  (nonzero and growing with |alpha-1| confirms non-homogeneity)
+    Llama-3.2-1B  alpha=1.10: max|logit diff| = 1.1953  (nonzero and growing with |alpha-1| confirms non-homogeneity)
+    Llama-3.2-1B  alpha=1.50: max|logit diff| = 3.7188  (nonzero and growing with |alpha-1| confirms non-homogeneity)
+
+    Llama-3.2-1B  alpha=2.00: max|logit diff| = 4.7812  (nonzero and growing with |alpha-1| confirms non-homogeneity)
+
+Ending Cell 85-----------------------------------------
+Executing Cell 86--------------------------------------
+Ending Cell 86-----------------------------------------
+Executing Cell 87--------------------------------------
+Ending Cell 87-----------------------------------------
+Executing Cell 88--------------------------------------
+Ending Cell 88-----------------------------------------
+Executing Cell 89--------------------------------------
+Ending Cell 89-----------------------------------------
+Executing Cell 90--------------------------------------
+Ending Cell 90-----------------------------------------
+Executing Cell 91--------------------------------------
+Ending Cell 91-----------------------------------------
+Executing Cell 92--------------------------------------
+Ending Cell 92-----------------------------------------
+Executing Cell 93--------------------------------------
+Ending Cell 93-----------------------------------------
+Executing Cell 94--------------------------------------
+Ending Cell 94-----------------------------------------
