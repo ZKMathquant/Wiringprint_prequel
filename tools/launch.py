@@ -38,7 +38,7 @@ def secret(name):
         from kaggle_secrets import UserSecretsClient
         v = UserSecretsClient().get_secret(name)
     except Exception as e:
-        print("[stub] secret %s not available via Kaggle Secrets (%s)" % (name, type(e).__name__), flush=True)
+        print("[stub] secret %s not available via Kaggle Secrets (%s: %s)" % (name, type(e).__name__, str(e)[:160]), flush=True)
         v = None
     return v or os.environ.get(name)
 
@@ -201,6 +201,26 @@ def push_kernel(kdir, accelerator, gpu, timeout_s):
     sys.exit(f"Kaggle push failed:\n{last}")
 
 
+def failure_hint(slug):
+    """Key lines of the kernel log, so a failed start explains itself in the Actions log."""
+    time.sleep(8)
+    d = tempfile.mkdtemp(prefix="ko_")
+    try:
+        kaggle(["kernels", "output", slug, "-p", d], timeout=180)
+    except Exception:
+        return ""
+    keep = []
+    for f in pathlib.Path(d).rglob("*.log"):
+        txt = f.read_text(errors="replace")
+        try:
+            txt = "".join(x.get("data", "") for x in json.loads(txt))
+        except Exception:
+            pass
+        keep += [ln.strip() for ln in txt.splitlines()
+                 if re.search(r"\[(stub|selfcheck|runner|preflight)\]|Traceback|Error", ln)]
+    return "\n".join(keep[-20:])
+
+
 def verify_started(slug, prior, wait_s=420):
     """Return the state once Kaggle shows queued/running. Terminal states seen in the first 90 s are
     the PREVIOUS version's and are ignored."""
@@ -213,7 +233,9 @@ def verify_started(slug, prior, wait_s=420):
         if state in ("queued", "running"):
             return state
         if state in ("error", "cancelled") and age > 90:
-            sys.exit(f"Kaggle reports '{state}' for {slug} right after launch:\n{out}")
+            hint = failure_hint(slug)
+            sys.exit(f"Kaggle reports '{state}' for {slug} right after launch.\n"
+                     f"Key lines from the kernel log:\n{hint or '(no log available yet - open the kernel on Kaggle)'}")
         if state == "complete" and age > 90:
             return "complete"
     sys.exit(f"Could not confirm the run started within {wait_s}s (last state '{state}'). Check {slug} on Kaggle.")

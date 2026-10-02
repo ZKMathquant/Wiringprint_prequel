@@ -66,6 +66,7 @@ Notebooks are independent of each other: each starts in an empty working directo
 Kaggle has no API to attach secrets, so on each runner kernel (`iamakagggler/nid-wiringprint-prequel-a` and `iamakagggler/nid-wiringprint-prequel-b`) open
 *Add-ons -> Secrets*, add the two secrets once and switch them **on** for that notebook. Use `selfcheck` to confirm.
 
+**Secret mode = inline**: `GH_TOKEN`/`HF_TOKEN` are repo secrets (`RUNTIME_GH_TOKEN`, `RUNTIME_HF_TOKEN`) written into the PRIVATE kernel source at launch, so no Kaggle-side attaching is needed. Never make a runner kernel public.
 
 ## Limits to know
 

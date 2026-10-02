@@ -11,7 +11,7 @@
   "session_limit_hours": 12,
   "safety_margin_minutes": 40,
   "max_bundle_mb": 400,
-  "secret_mode": "kaggle_secrets",
+  "secret_mode": "inline",
   "dataset_sources": [],
   "git_author": {
     "name": "ZKMathquant",
