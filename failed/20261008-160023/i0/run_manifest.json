@@ -1,0 +1,25 @@
+{
+  "run_id": "20261008-160023",
+  "notebook": "i0",
+  "repo_sha": "02a386c7c71d29b7a3e67bfa0d4a22b11ac30c25",
+  "slot": "a",
+  "started_utc": "2026-10-08T16:00:31Z",
+  "python": "3.12.13",
+  "status": "failed",
+  "reason": "papermill exit code 1",
+  "resume_from": null,
+  "chain": "",
+  "src_sha256": "db9e45a21b3c2ee1",
+  "finished_utc": "2026-10-08T16:02:00Z",
+  "duration_s": 89,
+  "code_cells": 83,
+  "code_cells_executed": 8,
+  "first_error": {
+    "cell_index": 28,
+    "ename": "IndexError",
+    "evalue": "Dimension out of range (expected to be in range of [-2, 1], but got 2)"
+  },
+  "output_files": 0,
+  "output_bytes": 0,
+  "skipped_files": []
+}

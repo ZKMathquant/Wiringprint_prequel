@@ -1,0 +1,308 @@
+Input Notebook:  /tmp/nid_work/i0/i0.ipynb
+Output Notebook: /tmp/nid_work/i0.executed.ipynb
+Working directory: /tmp/nid_work/i0
+Executing notebook with kernel: python3
+Executing Cell 1---------------------------------------
+Ending Cell 1------------------------------------------
+Executing Cell 2---------------------------------------
+Ending Cell 2------------------------------------------
+Executing Cell 3---------------------------------------
+Ending Cell 3------------------------------------------
+Executing Cell 4---------------------------------------
+Ending Cell 4------------------------------------------
+Executing Cell 5---------------------------------------
+tokenizer_config.json:   0%|          | 0.00/26.0 [00:00<?, ?B/s]
+vocab.json: 0.00B [00:00, ?B/s]
+merges.txt: 0.00B [00:00, ?B/s]
+tokenizer.json: 0.00B [00:00, ?B/s]
+Model: gpt2, target layer: 0, device: cpu
+Eval corpus: 8 sentences
+
+Ending Cell 5------------------------------------------
+Executing Cell 6---------------------------------------
+Ending Cell 6------------------------------------------
+Executing Cell 7---------------------------------------
+Ending Cell 7------------------------------------------
+Executing Cell 8---------------------------------------
+Ending Cell 8------------------------------------------
+Executing Cell 9---------------------------------------
+Ending Cell 9------------------------------------------
+Executing Cell 10--------------------------------------
+config.json:   0%|          | 0.00/665 [00:00<?, ?B/s]
+model.safetensors:   0%|          | 0.00/548M [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...11}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+generation_config.json:   0%|          | 0.00/124 [00:00<?, ?B/s]
+======================================================================
+STEP 1: BASELINE
+======================================================================
+
+`loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+
+    baseline | accuracy=0.3155  perplexity=56.629  ECE=0.1050
+
+Ending Cell 10-----------------------------------------
+Executing Cell 11--------------------------------------
+Ending Cell 11-----------------------------------------
+Executing Cell 12--------------------------------------
+Ending Cell 12-----------------------------------------
+Executing Cell 13--------------------------------------
+Ending Cell 13-----------------------------------------
+Executing Cell 14--------------------------------------
+======================================================================
+STEP 2: ALIGNED PERMUTATION
+======================================================================
+
+Layer 0 permutation applied (3072 neurons).
+Max abs logit difference vs. baseline on sample sentence: 7.63e-05
+(should be ~1e-5 or smaller -- floating point noise, not a real difference)
+
+Ending Cell 14-----------------------------------------
+Executing Cell 15--------------------------------------
+Ending Cell 15-----------------------------------------
+Executing Cell 16--------------------------------------
+Ending Cell 16-----------------------------------------
+Executing Cell 17--------------------------------------
+Ending Cell 17-----------------------------------------
+Executing Cell 18--------------------------------------
+======================================================================
+STEP 3: UNALIGNED PERMUTATION (NEGATIVE CONTROL)
+======================================================================
+
+Layer 0 permutation applied WITHOUT c_proj compensation.
+Max abs logit difference vs. baseline on sample sentence: 53.760
+(should be large -- this is the intended collapse)
+
+Ending Cell 18-----------------------------------------
+Executing Cell 19--------------------------------------
+Ending Cell 19-----------------------------------------
+Executing Cell 20--------------------------------------
+Ending Cell 20-----------------------------------------
+Executing Cell 21--------------------------------------
+======================================================================
+STEP 4: FULL BATTERY -- BASELINE vs. ALIGNED vs. UNALIGNED
+======================================================================
+
+     aligned | accuracy=0.3155  perplexity=56.629  ECE=0.1050
+
+   unaligned | accuracy=0.0409  perplexity=3892.809  ECE=0.1055
+
+Summary (diff from baseline):
+   aligned | d(accuracy)=+0.0000  d(perplexity)=-0.000  d(ECE)=-0.0000
+ unaligned | d(accuracy)=-0.2746  d(perplexity)=+3836.180  d(ECE)=+0.0004
+
+Expected: aligned diffs ~0 across all three metrics; unaligned diffs large.
+
+Ending Cell 21-----------------------------------------
+Executing Cell 22--------------------------------------
+Ending Cell 22-----------------------------------------
+Executing Cell 23--------------------------------------
+Ending Cell 23-----------------------------------------
+Executing Cell 24--------------------------------------
+======================================================================
+STEP 5: LINEAR CKA -- BASELINE vs. ALIGNED / UNALIGNED, PER LAYER
+======================================================================
+
+Layer  0: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=1.0000
+
+Layer  1: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.7794
+
+Layer  2: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9668
+
+Layer  3: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9145
+
+Layer  4: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9215
+
+Layer  5: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9300
+
+Layer  6: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9324
+
+Layer  7: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9355
+
+Layer  8: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9376
+
+Layer  9: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9396
+
+Layer 10: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9413
+
+Layer 11: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9445
+
+Layer 12: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.0400
+
+Expected: CKA(aligned) ~1.0 at every layer; CKA(unaligned) drops sharply from
+the manipulated layer onward.
+
+Ending Cell 24-----------------------------------------
+Executing Cell 25--------------------------------------
+Ending Cell 25-----------------------------------------
+Executing Cell 26--------------------------------------
+Ending Cell 26-----------------------------------------
+Executing Cell 27--------------------------------------
+======================================================================
+STEP 6: CAUSAL TRACING -- WHICH LAYER CARRIES THE FACT AFTER UNALIGNED PERMUTATION
+======================================================================
+
+The following generation flags are not valid and may be ignored: ['output_hidden_states']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...11}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Ending Cell 27-----------------------------------------
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/usr/local/lib/python3.12/dist-packages/papermill/__main__.py", line 4, in <module>
+    papermill()
+  File "/usr/local/lib/python3.12/dist-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/click/decorators.py", line 34, in new_func
+    return f(get_current_context(), *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/papermill/cli.py", line 235, in papermill
+    execute_notebook(
+  File "/usr/local/lib/python3.12/dist-packages/papermill/execute.py", line 131, in execute_notebook
+    raise_for_execution_errors(nb, output_path)
+  File "/usr/local/lib/python3.12/dist-packages/papermill/execute.py", line 251, in raise_for_execution_errors
+    raise error
+papermill.exceptions.PapermillExecutionError: 
+---------------------------------------------------------------------------
+Exception encountered at "In [8]":
+---------------------------------------------------------------------------
+IndexError                                Traceback (most recent call last)
+/tmp/ipykernel_62/3525588410.py in <cell line: 0>()
+     62 unaligned_for_tracing.eval()
+     63 
+---> 64 restoration = run_causal_tracing(unaligned_for_tracing, tokenizer, CAUSAL_TRACE_PAIRS, DEVICE)
+     65 for layer, val in enumerate(restoration):
+     66     print(f"Layer {layer:2d}: mean restoration = {val:.3f}")
+
+/tmp/ipykernel_62/3525588410.py in run_causal_tracing(model_with_output_hidden_states, tokenizer, pairs, device)
+     40             h = model.transformer.h[layer].register_forward_hook(hook)
+     41             with torch.no_grad():
+---> 42                 patched_logits = model(corrupt_ids).logits
+     43             h.remove()
+     44 
+
+/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py in _wrapped_call_impl(self, *args, **kwargs)
+   1774             return self._compiled_call_impl(*args, **kwargs)  # type: ignore[misc]
+   1775         else:
+-> 1776             return self._call_impl(*args, **kwargs)
+   1777 
+   1778     # torchrec tests the code consistency with the following code
+
+/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py in _call_impl(self, *args, **kwargs)
+   1785                 or _global_backward_pre_hooks or _global_backward_hooks
+   1786                 or _global_forward_hooks or _global_forward_pre_hooks):
+-> 1787             return forward_call(*args, **kwargs)
+   1788 
+   1789         result = None
+
+/usr/local/lib/python3.12/dist-packages/transformers/models/gpt2/modeling_gpt2.py in forward(self, input_ids, past_key_values, cache_position, attention_mask, token_type_ids, position_ids, inputs_embeds, encoder_hidden_states, encoder_attention_mask, labels, use_cache, output_attentions, output_hidden_states, return_dict, logits_to_keep, **kwargs)
+    803         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
+    804 
+--> 805         transformer_outputs = self.transformer(
+    806             input_ids,
+    807             past_key_values=past_key_values,
+
+/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py in _wrapped_call_impl(self, *args, **kwargs)
+   1774             return self._compiled_call_impl(*args, **kwargs)  # type: ignore[misc]
+   1775         else:
+-> 1776             return self._call_impl(*args, **kwargs)
+   1777 
+   1778     # torchrec tests the code consistency with the following code
+
+/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py in _call_impl(self, *args, **kwargs)
+   1785                 or _global_backward_pre_hooks or _global_backward_hooks
+   1786                 or _global_forward_hooks or _global_forward_pre_hooks):
+-> 1787             return forward_call(*args, **kwargs)
+   1788 
+   1789         result = None
+
+/usr/local/lib/python3.12/dist-packages/transformers/models/gpt2/modeling_gpt2.py in forward(self, input_ids, past_key_values, cache_position, attention_mask, token_type_ids, position_ids, inputs_embeds, encoder_hidden_states, encoder_attention_mask, use_cache, output_attentions, output_hidden_states, return_dict, **kwargs)
+    703                 all_hidden_states = all_hidden_states + (hidden_states,)
+    704 
+--> 705             outputs = block(
+    706                 hidden_states,
+    707                 past_key_values if not (self.gradient_checkpointing and self.training) else None,
+
+/usr/local/lib/python3.12/dist-packages/transformers/modeling_layers.py in __call__(self, *args, **kwargs)
+     91 
+     92             return self._gradient_checkpointing_func(partial(super().__call__, **kwargs), *args)
+---> 93         return super().__call__(*args, **kwargs)
+     94 
+     95 
+
+/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py in _wrapped_call_impl(self, *args, **kwargs)
+   1774             return self._compiled_call_impl(*args, **kwargs)  # type: ignore[misc]
+   1775         else:
+-> 1776             return self._call_impl(*args, **kwargs)
+   1777 
+   1778     # torchrec tests the code consistency with the following code
+
+/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py in _call_impl(self, *args, **kwargs)
+   1785                 or _global_backward_pre_hooks or _global_backward_hooks
+   1786                 or _global_forward_hooks or _global_forward_pre_hooks):
+-> 1787             return forward_call(*args, **kwargs)
+   1788 
+   1789         result = None
+
+/usr/local/lib/python3.12/dist-packages/transformers/models/gpt2/modeling_gpt2.py in forward(self, hidden_states, past_key_values, cache_position, attention_mask, encoder_hidden_states, encoder_attention_mask, use_cache, output_attentions, **kwargs)
+    317         residual = hidden_states
+    318         hidden_states = self.ln_1(hidden_states)
+--> 319         attn_output, self_attn_weights = self.attn(
+    320             hidden_states,
+    321             past_key_values=past_key_values,
+
+/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py in _wrapped_call_impl(self, *args, **kwargs)
+   1774             return self._compiled_call_impl(*args, **kwargs)  # type: ignore[misc]
+   1775         else:
+-> 1776             return self._call_impl(*args, **kwargs)
+   1777 
+   1778     # torchrec tests the code consistency with the following code
+
+/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py in _call_impl(self, *args, **kwargs)
+   1785                 or _global_backward_pre_hooks or _global_backward_hooks
+   1786                 or _global_forward_hooks or _global_forward_pre_hooks):
+-> 1787             return forward_call(*args, **kwargs)
+   1788 
+   1789         result = None
+
+/usr/local/lib/python3.12/dist-packages/transformers/models/gpt2/modeling_gpt2.py in forward(self, hidden_states, past_key_values, cache_position, attention_mask, encoder_hidden_states, encoder_attention_mask, output_attentions, **kwargs)
+    223                 value_states = value_states.view(shape_kv).transpose(1, 2)
+    224         else:
+--> 225             query_states, key_states, value_states = self.c_attn(hidden_states).split(self.split_size, dim=2)
+    226             shape_kv = (*key_states.shape[:-1], -1, self.head_dim)
+    227             key_states = key_states.view(shape_kv).transpose(1, 2)
+
+/usr/local/lib/python3.12/dist-packages/torch/_tensor.py in split(self, split_size, dim)
+   1062 
+   1063         if isinstance(split_size, (int, torch.SymInt)):
+-> 1064             return torch._VF.split(self, split_size, dim)  # type: ignore[attr-defined]
+   1065         else:
+   1066             return torch._VF.split_with_sizes(
+
+IndexError: Dimension out of range (expected to be in range of [-2, 1], but got 2)
+
