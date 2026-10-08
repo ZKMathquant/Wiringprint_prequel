@@ -1,0 +1,21 @@
+{
+  "run_id": "20261008-181251",
+  "notebook": "i4",
+  "repo_sha": "b602c8339500fd69ce1d34762900962905e1d794",
+  "slot": "b",
+  "started_utc": "2026-10-08T18:15:58Z",
+  "python": "3.12.13",
+  "status": "success",
+  "reason": "",
+  "resume_from": null,
+  "chain": "",
+  "src_sha256": "db9e45a21b3c2ee1",
+  "finished_utc": "2026-10-08T19:43:23Z",
+  "duration_s": 5245,
+  "code_cells": 58,
+  "code_cells_executed": 58,
+  "first_error": null,
+  "output_files": 297,
+  "output_bytes": 1137192,
+  "skipped_files": []
+}

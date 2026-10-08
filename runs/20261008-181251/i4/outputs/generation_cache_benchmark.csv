@@ -1,0 +1,10 @@
+cache_implementation,seconds,new_tokens,status,model
+offloaded_static,0.00010074199963128194,0,rejected:RuntimeError,Qwen2.5-1.5B
+static,9.562699960952159e-05,0,rejected:RuntimeError,Qwen2.5-1.5B
+default,9.085900001082337e-05,0,rejected:RuntimeError,Qwen2.5-1.5B
+offloaded_static,8.157899992511375e-05,0,rejected:RuntimeError,Gemma-2-2b
+static,0.00010224600009678397,0,rejected:RuntimeError,Gemma-2-2b
+default,8.632099979877239e-05,0,rejected:RuntimeError,Gemma-2-2b
+offloaded_static,7.087300036801025e-05,0,rejected:RuntimeError,Llama-3.2-1B
+static,9.547799982101424e-05,0,rejected:RuntimeError,Llama-3.2-1B
+default,9.308200060331728e-05,0,rejected:RuntimeError,Llama-3.2-1B
