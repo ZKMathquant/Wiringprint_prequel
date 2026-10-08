@@ -90,3 +90,11 @@ Kaggle has no API to attach secrets, so on each runner kernel (`iamakagggler/nid
 | `failed/.../preflight_failed` mentions `gated` | accept the model licence on huggingface.co with the account that owns `HF_TOKEN` |
 | `preflight_failed: gpu` | Kaggle gave a different GPU than `require_gpu_substring` in `config/project.json` |
 | `chain: CHAIN_ERROR` | `GH_TOKEN` lacks Actions: write - start the remaining notebooks manually (see `runs/<run_id>/_chain_errors/`) |
+
+## Shared code (`src/wiringprint`)
+
+The helper functions the notebooks used to define (and copy between each other) live once in `src/wiringprint/`; each
+notebook imports what it uses. Kaggle runs put the *pinned* commit's `src/` on `PYTHONPATH` and take the notebook from the
+same commit, and `run_manifest.json` records `src_sha256`. Older helper versions that earlier notebooks depend on are kept in
+`wiringprint/variants/`. Details, module map and the exact (mechanical) changes: [`docs/REFACTOR.md`](docs/REFACTOR.md).
+`python tools/check_repo.py` (also run by the *Check repo* workflow on every push) verifies that every import resolves.

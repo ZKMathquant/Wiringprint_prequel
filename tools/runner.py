@@ -113,6 +113,26 @@ def report(results, tag="preflight"):
         log(f"[{tag}] {level:4s} {name}: {msg}")
 
 
+def check_package(root):
+    """Import every module of src/<package> on the real Kaggle stack (CPU only, no GPU quota needed)."""
+    import importlib
+    src = pathlib.Path(root) / "src"
+    if not src.is_dir():
+        return [("INFO", "src", "no src/ directory in this repo")]
+    sys.path.insert(0, str(src))
+    out = []
+    for pkg in sorted(p.name for p in src.iterdir() if (p / "__init__.py").exists()):
+        for f in sorted((src / pkg).rglob("*.py")):
+            rel = f.relative_to(src).with_suffix("")
+            mod = ".".join(rel.parts[:-1] if rel.name == "__init__" else rel.parts)
+            try:
+                importlib.import_module(mod)
+                out.append(("OK", f"import:{mod}", "imports"))
+            except Exception as e:
+                out.append(("FAIL", f"import:{mod}", f"{type(e).__name__}: {str(e)[:200]}"))
+    return out
+
+
 def selfcheck(RUN, cfg, root):
     gh, hf = os.environ.get("GH_TOKEN"), os.environ.get("HF_TOKEN")
     models = sorted({m for nb in cfg["notebooks"].values() for m in nb.get("hf_models", [])})
@@ -123,6 +143,7 @@ def selfcheck(RUN, cfg, root):
     res += github_checks(cfg["owner"], cfg["repo"], gh)
     res += hf_checks(models, hf, needs_hf)
     res += check_gpu(cfg, hard=False)
+    res += check_package(root)
     report(res, "selfcheck")
     fails = [r for r in res if r[0] == "FAIL"]
     pathlib.Path("/kaggle/working").mkdir(parents=True, exist_ok=True)
@@ -193,6 +214,19 @@ def execute(src, dst, cwd, env, log_path, budget_s):
                 continue
     t.join(timeout=30)
     return (proc.returncode if proc.returncode is not None else -9), timed_out
+
+
+def src_tree_hash(src_dir):
+    """Stable fingerprint of the shared code a run used (recorded in run_manifest.json)."""
+    import hashlib
+    h = hashlib.sha256()
+    d = pathlib.Path(src_dir)
+    if not d.is_dir():
+        return None
+    for p in sorted(d.rglob("*.py")):
+        h.update(str(p.relative_to(d)).encode())
+        h.update(p.read_bytes())
+    return h.hexdigest()[:16]
 
 
 def notebook_stats(path):
@@ -330,9 +364,13 @@ def main(RUN, root):
             raise C.FrozenError(reason)
         if fails:
             raise PreflightError("; ".join(f"{r[1]}: {r[2]}" for r in fails))
-        src_nb = push_repo / nb_cfg["file"]
+        # Notebook AND shared code come from the pinned checkout (`root`, the exact launch commit), so they
+        # can never be from different commits even if the branch moved while the run sat in Kaggle's queue.
+        src_nb = root / nb_cfg["file"]
         if not src_nb.exists():
             raise PreflightError(f"{nb_cfg['file']} missing in repo at the pinned commit")
+        src_dir = root / "src"
+        manifest["src_sha256"] = src_tree_hash(src_dir)
         shutil.copy2(src_nb, workdir / f"{nb_id}.ipynb")
         before = snapshot(workdir)  # only the input notebook is excluded; seeded files are carried forward
         resume = RUN.get("resume_from") or ""
@@ -347,7 +385,8 @@ def main(RUN, root):
             log(f"[runner] seeded working dir from {resume}/outputs")
         ensure_papermill()
 
-        env = {**os.environ, "PYTHONUNBUFFERED": "1", "TOKENIZERS_PARALLELISM": "false",
+        env = {**os.environ, "PYTHONUNBUFFERED": "1", "TOKENIZERS_PARALLELISM": "false", "PYTHONDONTWRITEBYTECODE": "1",
+               "PYTHONPATH": os.pathsep.join(p for p in (str(src_dir), os.environ.get("PYTHONPATH", "")) if p),
                "HF_HOME": os.environ.get("HF_HOME", "/tmp/hf"), "NID_RUN_ID": run_id, "NID_NOTEBOOK": nb_id}
         if hf:
             env["HF_TOKEN"] = env["HUGGING_FACE_HUB_TOKEN"] = hf
