@@ -1,9 +1,0 @@
-claim,epistemic_type,what_identifies_it,limitation
-Theorem 1 exact symmetry,formal,parameterization/architecture,not statistical; FP16 numerical check is a sanity check
-Aligned-vs-unaligned separation,empirical control,"same checkpoint, matched precision",not a proof of real-number exactness
-Rotation robustness,empirical/interventional,"specific models, layer(s), corpus, angles",not universal
-Dilution-ratio relationship,intervention + association,tested layers/models,"layer x theta points are NESTED within 3 checkpoints, not independent replicates -- n=3 is the true cross-model replication count"
-M7 permutation orbit,empirical explanatory evidence,"neighbor-angle-controlled recovery region, N=3 seeds/offset",not evidence of universal degeneracy
-M6 low-rank account,graded intervention test,10/25/50/75% tested range,not a refutation outside tested range
-Corpus calibration,external-validity diagnostic,held-out extension,not benchmark-scale validation
-Quantized baseline,systems control,AWQ/GPTQ checkpoint if supplied,quantization is a distinct parameterization
