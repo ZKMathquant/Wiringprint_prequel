@@ -1,0 +1,1491 @@
+Input Notebook:  /tmp/nid_work/i0/i0.ipynb
+Output Notebook: /tmp/nid_work/i0.executed.ipynb
+Working directory: /tmp/nid_work/i0
+Executing notebook with kernel: python3
+Executing Cell 1---------------------------------------
+Ending Cell 1------------------------------------------
+Executing Cell 2---------------------------------------
+Ending Cell 2------------------------------------------
+Executing Cell 3---------------------------------------
+Ending Cell 3------------------------------------------
+Executing Cell 4---------------------------------------
+Ending Cell 4------------------------------------------
+Executing Cell 5---------------------------------------
+tokenizer_config.json:   0%|          | 0.00/26.0 [00:00<?, ?B/s]
+vocab.json: 0.00B [00:00, ?B/s]
+merges.txt: 0.00B [00:00, ?B/s]
+tokenizer.json: 0.00B [00:00, ?B/s]
+Model: gpt2, target layer: 0, device: cpu
+Eval corpus: 8 sentences
+
+Ending Cell 5------------------------------------------
+Executing Cell 6---------------------------------------
+Ending Cell 6------------------------------------------
+Executing Cell 7---------------------------------------
+Ending Cell 7------------------------------------------
+Executing Cell 8---------------------------------------
+Ending Cell 8------------------------------------------
+Executing Cell 9---------------------------------------
+Ending Cell 9------------------------------------------
+Executing Cell 10--------------------------------------
+config.json:   0%|          | 0.00/665 [00:00<?, ?B/s]
+model.safetensors:   0%|          | 0.00/548M [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...11}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+generation_config.json:   0%|          | 0.00/124 [00:00<?, ?B/s]
+======================================================================
+STEP 1: BASELINE
+======================================================================
+
+`loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+
+    baseline | accuracy=0.3155  perplexity=56.629  ECE=0.1050
+
+Ending Cell 10-----------------------------------------
+Executing Cell 11--------------------------------------
+Ending Cell 11-----------------------------------------
+Executing Cell 12--------------------------------------
+Ending Cell 12-----------------------------------------
+Executing Cell 13--------------------------------------
+Ending Cell 13-----------------------------------------
+Executing Cell 14--------------------------------------
+======================================================================
+STEP 2: ALIGNED PERMUTATION
+======================================================================
+
+Layer 0 permutation applied (3072 neurons).
+Max abs logit difference vs. baseline on sample sentence: 7.63e-05
+(should be ~1e-5 or smaller -- floating point noise, not a real difference)
+
+Ending Cell 14-----------------------------------------
+Executing Cell 15--------------------------------------
+Ending Cell 15-----------------------------------------
+Executing Cell 16--------------------------------------
+Ending Cell 16-----------------------------------------
+Executing Cell 17--------------------------------------
+Ending Cell 17-----------------------------------------
+Executing Cell 18--------------------------------------
+======================================================================
+STEP 3: UNALIGNED PERMUTATION (NEGATIVE CONTROL)
+======================================================================
+
+Layer 0 permutation applied WITHOUT c_proj compensation.
+Max abs logit difference vs. baseline on sample sentence: 53.760
+(should be large -- this is the intended collapse)
+
+Ending Cell 18-----------------------------------------
+Executing Cell 19--------------------------------------
+Ending Cell 19-----------------------------------------
+Executing Cell 20--------------------------------------
+Ending Cell 20-----------------------------------------
+Executing Cell 21--------------------------------------
+======================================================================
+STEP 4: FULL BATTERY -- BASELINE vs. ALIGNED vs. UNALIGNED
+======================================================================
+
+     aligned | accuracy=0.3155  perplexity=56.629  ECE=0.1050
+
+   unaligned | accuracy=0.0409  perplexity=3892.809  ECE=0.1055
+
+Summary (diff from baseline):
+   aligned | d(accuracy)=+0.0000  d(perplexity)=-0.000  d(ECE)=-0.0000
+ unaligned | d(accuracy)=-0.2746  d(perplexity)=+3836.180  d(ECE)=+0.0004
+
+Expected: aligned diffs ~0 across all three metrics; unaligned diffs large.
+
+Ending Cell 21-----------------------------------------
+Executing Cell 22--------------------------------------
+Ending Cell 22-----------------------------------------
+Executing Cell 23--------------------------------------
+Ending Cell 23-----------------------------------------
+Executing Cell 24--------------------------------------
+======================================================================
+STEP 5: LINEAR CKA -- BASELINE vs. ALIGNED / UNALIGNED, PER LAYER
+======================================================================
+
+Layer  0: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=1.0000
+
+Layer  1: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.7794
+
+Layer  2: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9668
+
+Layer  3: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9145
+
+Layer  4: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9215
+
+Layer  5: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9300
+
+Layer  6: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9324
+
+Layer  7: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9355
+
+Layer  8: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9376
+
+Layer  9: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9396
+
+Layer 10: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9413
+
+Layer 11: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9445
+
+Layer 12: CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.0400
+
+Expected: CKA(aligned) ~1.0 at every layer; CKA(unaligned) drops sharply from
+the manipulated layer onward.
+
+Ending Cell 24-----------------------------------------
+Executing Cell 25--------------------------------------
+Ending Cell 25-----------------------------------------
+Executing Cell 26--------------------------------------
+Ending Cell 26-----------------------------------------
+Executing Cell 27--------------------------------------
+======================================================================
+STEP 6: CAUSAL TRACING -- WHICH LAYER CARRIES THE FACT AFTER UNALIGNED PERMUTATION
+======================================================================
+
+The following generation flags are not valid and may be ignored: ['output_hidden_states']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...11}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Layer  0: mean restoration = 1.069
+Layer  1: mean restoration = 0.970
+Layer  2: mean restoration = 1.063
+Layer  3: mean restoration = 1.057
+Layer  4: mean restoration = 1.088
+Layer  5: mean restoration = 1.075
+Layer  6: mean restoration = 1.100
+Layer  7: mean restoration = 0.943
+Layer  8: mean restoration = 0.889
+Layer  9: mean restoration = 0.834
+Layer 10: mean restoration = 0.593
+Layer 11: mean restoration = 0.000
+
+A restoration score near 1.0 at a given layer means patching that layer's clean
+activation back in recovers the correct answer -- i.e., that's where the fact
+lives in the unaligned (broken) model's forward pass.
+
+Ending Cell 27-----------------------------------------
+Executing Cell 28--------------------------------------
+Ending Cell 28-----------------------------------------
+Executing Cell 29--------------------------------------
+Ending Cell 29-----------------------------------------
+Executing Cell 30--------------------------------------
+======================================================================
+STEP 7: OOD STRESS TEST
+======================================================================
+
+-- baseline --
+
+          code: perplexity =    19.06
+
+   non_english: perplexity =   423.27
+
+     corrupted: perplexity =  1957.62
+
+-- aligned --
+
+          code: perplexity =    19.06
+
+   non_english: perplexity =   423.27
+
+     corrupted: perplexity =  1957.61
+
+-- unaligned --
+
+          code: perplexity =  2279.66
+
+   non_english: perplexity = 14818.23
+
+     corrupted: perplexity =  1874.29
+
+Expected: aligned perplexity tracks baseline closely on every OOD domain;
+unaligned perplexity spikes, showing the collapse isn't just an IID-prose effect.
+
+Ending Cell 30-----------------------------------------
+Executing Cell 31--------------------------------------
+Ending Cell 31-----------------------------------------
+Executing Cell 32--------------------------------------
+Ending Cell 32-----------------------------------------
+Executing Cell 33--------------------------------------
+======================================================================
+STEP 8: MULTI-SEED SWEEP (N=15 seeds, 95% CI)
+======================================================================
+
+Aligned   accuracy diff: mean=+0.00000  CI=[+0.00000, +0.00000]
+Unaligned accuracy diff: mean=-0.25263  CI=[-0.26669, -0.23858]
+
+Expected: aligned CI tightly bracketing 0; unaligned CI bracketing a large
+negative value, well separated from the aligned CI.
+
+Ending Cell 33-----------------------------------------
+Executing Cell 34--------------------------------------
+Ending Cell 34-----------------------------------------
+Executing Cell 35--------------------------------------
+Ending Cell 35-----------------------------------------
+Executing Cell 36--------------------------------------
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...11}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Setup complete.
+
+baseline (L0 rerun check) | accuracy=0.3155  perplexity=  56.629  ECE=0.1050
+
+Ending Cell 36-----------------------------------------
+Executing Cell 37--------------------------------------
+Ending Cell 37-----------------------------------------
+Executing Cell 38--------------------------------------
+Ending Cell 38-----------------------------------------
+Executing Cell 39--------------------------------------
+==============================================================================
+SECTION 2: ATTENTION-HEAD PERMUTATION -- BASELINE vs. ALIGNED vs. UNALIGNED
+==============================================================================
+
+Layer 0, head permutation: [8, 0, 5, 9, 7, 4, 2, 10, 3, 1, 11, 6]
+Max abs logit diff, aligned:   7.63e-05  (expect ~1e-5, floating-point noise)
+Max abs logit diff, unaligned: 66.111  (expect large)
+
+
+          baseline | accuracy=0.3155  perplexity=  56.629  ECE=0.1050
+
+      head-aligned | accuracy=0.3155  perplexity=  56.629  ECE=0.1050
+
+    head-unaligned | accuracy=0.2166  perplexity= 314.340  ECE=0.0763
+
+Ending Cell 39-----------------------------------------
+Executing Cell 40--------------------------------------
+Ending Cell 40-----------------------------------------
+Executing Cell 41--------------------------------------
+Ending Cell 41-----------------------------------------
+Executing Cell 42--------------------------------------
+==============================================================================
+SECTION 3: ALTERNATIVE PERTURBATION CONTROLS vs. ALIGNED PERMUTATION
+==============================================================================
+
+          baseline | accuracy=0.3155  perplexity=  56.629  ECE=0.1050
+
+aligned permutation | accuracy=0.3155  perplexity=  56.629  ECE=0.1050
+
+local rotation (MLP axis) | accuracy=0.0125  perplexity=38935142.739  ECE=0.2613
+
+global rotation (residual) | accuracy=0.0000  perplexity=205711826.506  ECE=0.4372
+
+gaussian_noise (sigma=0.05x) | accuracy=0.3155  perplexity=  57.155  ECE=0.1022
+
+gaussian_noise (sigma=0.10x) | accuracy=0.3155  perplexity=  57.790  ECE=0.1021
+
+gaussian_noise (sigma=0.25x) | accuracy=0.3155  perplexity=  60.405  ECE=0.0969
+
+neuron_deletion (10%) | accuracy=0.2981  perplexity=  63.572  ECE=0.0906
+
+neuron_deletion (25%) | accuracy=0.3095  perplexity=  68.601  ECE=0.0785
+
+neuron_deletion (50%) | accuracy=0.3163  perplexity= 101.210  ECE=0.0982
+
+<Figure size 1430x495 with 2 Axes>
+Ending Cell 42-----------------------------------------
+Executing Cell 43--------------------------------------
+Ending Cell 43-----------------------------------------
+Executing Cell 44--------------------------------------
+Ending Cell 44-----------------------------------------
+Executing Cell 45--------------------------------------
+==============================================================================
+SECTION 4: IDENTITY BOUNDARY ANALYSIS -- GRADED SYMMETRY VIOLATION
+==============================================================================
+
+violation=    0% | accuracy=0.3155 +/- 0.0000  perplexity=    56.63 +/-    0.00
+
+violation=   10% | accuracy=0.3130 +/- 0.0118  perplexity=    62.67 +/-    4.74
+
+violation=   20% | accuracy=0.2998 +/- 0.0310  perplexity=    71.60 +/-    8.58
+
+violation=   40% | accuracy=0.2896 +/- 0.0184  perplexity=    93.13 +/-    9.70
+
+violation=   60% | accuracy=0.2207 +/- 0.0469  perplexity=   238.40 +/-   46.65
+
+violation=   80% | accuracy=0.1161 +/- 0.0649  perplexity=  1327.42 +/-  540.46
+
+violation=  100% | accuracy=0.0412 +/- 0.0279  perplexity=  6639.46 +/- 6003.51
+
+<Figure size 1430x495 with 2 Axes>
+Ending Cell 45-----------------------------------------
+Executing Cell 46--------------------------------------
+Ending Cell 46-----------------------------------------
+Executing Cell 47--------------------------------------
+Ending Cell 47-----------------------------------------
+Executing Cell 48--------------------------------------
+==============================================================================
+SECTION 5: REPRESENTATION GEOMETRY -- CKA, PROCRUSTES, PRINCIPAL ANGLES
+==============================================================================
+
+
+-- aligned --
+  layer  0: CKA=1.0000  Procrustes=0.0000  mean principal angle=  0.00 deg
+  layer  1: CKA=1.0000  Procrustes=0.0000  mean principal angle=  0.00 deg
+  layer  2: CKA=1.0000  Procrustes=0.0001  mean principal angle=  0.00 deg
+  layer  3: CKA=1.0000  Procrustes=0.0012  mean principal angle=  0.01 deg
+  layer  4: CKA=1.0000  Procrustes=0.0003  mean principal angle=  0.00 deg
+  layer  5: CKA=1.0000  Procrustes=0.0002  mean principal angle=  0.00 deg
+  layer  6: CKA=1.0000  Procrustes=0.0002  mean principal angle=  0.00 deg
+  layer  7: CKA=1.0000  Procrustes=0.0001  mean principal angle=  0.00 deg
+  layer  8: CKA=1.0000  Procrustes=0.0001  mean principal angle=  0.01 deg
+  layer  9: CKA=1.0000  Procrustes=0.0002  mean principal angle=  0.00 deg
+  layer 10: CKA=1.0000  Procrustes=0.0000  mean principal angle=  0.00 deg
+  layer 11: CKA=1.0000  Procrustes=0.0001  mean principal angle=  0.00 deg
+  layer 12: CKA=1.0000  Procrustes=0.0000  mean principal angle=  0.01 deg
+
+-- unaligned --
+  layer  0: CKA=1.0000  Procrustes=0.0000  mean principal angle=  0.00 deg
+  layer  1: CKA=0.7794  Procrustes=0.5139  mean principal angle= 66.38 deg
+  layer  2: CKA=0.9668  Procrustes=0.2629  mean principal angle= 62.10 deg
+  layer  3: CKA=0.9145  Procrustes=0.2981  mean principal angle= 66.02 deg
+  layer  4: CKA=0.9215  Procrustes=0.2855  mean principal angle= 65.84 deg
+  layer  5: CKA=0.9300  Procrustes=0.2693  mean principal angle= 66.83 deg
+  layer  6: CKA=0.9324  Procrustes=0.2644  mean principal angle= 68.41 deg
+  layer  7: CKA=0.9355  Procrustes=0.2586  mean principal angle= 69.16 deg
+  layer  8: CKA=0.9376  Procrustes=0.2548  mean principal angle= 70.51 deg
+  layer  9: CKA=0.9396  Procrustes=0.2517  mean principal angle= 69.78 deg
+  layer 10: CKA=0.9413  Procrustes=0.2502  mean principal angle= 69.66 deg
+  layer 11: CKA=0.9445  Procrustes=0.2485  mean principal angle= 68.74 deg
+  layer 12: CKA=0.0400  Procrustes=1.2119  mean principal angle= 41.21 deg
+
+-- head_aligned --
+  layer  0: CKA=1.0000  Procrustes=0.0000  mean principal angle=  0.00 deg
+  layer  1: CKA=1.0000  Procrustes=0.0000  mean principal angle=  0.00 deg
+  layer  2: CKA=1.0000  Procrustes=0.0001  mean principal angle=  0.00 deg
+  layer  3: CKA=1.0000  Procrustes=0.0012  mean principal angle=  0.00 deg
+  layer  4: CKA=1.0000  Procrustes=0.0003  mean principal angle=  0.01 deg
+  layer  5: CKA=1.0000  Procrustes=0.0002  mean principal angle=  0.01 deg
+  layer  6: CKA=1.0000  Procrustes=0.0002  mean principal angle=  0.00 deg
+  layer  7: CKA=1.0000  Procrustes=0.0001  mean principal angle=  0.01 deg
+  layer  8: CKA=1.0000  Procrustes=0.0001  mean principal angle=  0.00 deg
+  layer  9: CKA=1.0000  Procrustes=0.0002  mean principal angle=  0.00 deg
+  layer 10: CKA=1.0000  Procrustes=0.0001  mean principal angle=  0.00 deg
+  layer 11: CKA=1.0000  Procrustes=0.0001  mean principal angle=  0.00 deg
+  layer 12: CKA=1.0000  Procrustes=0.0000  mean principal angle=  0.01 deg
+
+-- head_unaligned --
+  layer  0: CKA=1.0000  Procrustes=0.0000  mean principal angle=  0.00 deg
+  layer  1: CKA=0.9306  Procrustes=0.3912  mean principal angle= 58.72 deg
+  layer  2: CKA=0.9850  Procrustes=0.1319  mean principal angle= 53.46 deg
+  layer  3: CKA=0.7303  Procrustes=0.5479  mean principal angle= 52.36 deg
+  layer  4: CKA=0.7662  Procrustes=0.5072  mean principal angle= 51.80 deg
+  layer  5: CKA=0.8001  Procrustes=0.4656  mean principal angle= 50.70 deg
+  layer  6: CKA=0.8245  Procrustes=0.4342  mean principal angle= 50.56 deg
+  layer  7: CKA=0.8383  Procrustes=0.4156  mean principal angle= 47.79 deg
+  layer  8: CKA=0.8475  Procrustes=0.4030  mean principal angle= 46.76 deg
+  layer  9: CKA=0.8583  Procrustes=0.3883  mean principal angle= 45.12 deg
+  layer 10: CKA=0.8652  Procrustes=0.3789  mean principal angle= 44.44 deg
+  layer 11: CKA=0.8796  Procrustes=0.3610  mean principal angle= 42.66 deg
+  layer 12: CKA=0.2750  Procrustes=0.9569  mean principal angle= 23.61 deg
+
+-- global_rotation --
+  layer  0: CKA=1.0000  Procrustes=0.0000  mean principal angle= 84.59 deg
+  layer  1: CKA=0.9447  Procrustes=0.4390  mean principal angle= 84.19 deg
+  layer  2: CKA=0.8824  Procrustes=0.4399  mean principal angle= 83.71 deg
+  layer  3: CKA=0.7247  Procrustes=0.6040  mean principal angle= 83.82 deg
+  layer  4: CKA=0.7264  Procrustes=0.5948  mean principal angle= 83.74 deg
+  layer  5: CKA=0.7283  Procrustes=0.5873  mean principal angle= 84.00 deg
+  layer  6: CKA=0.7298  Procrustes=0.5819  mean principal angle= 84.14 deg
+  layer  7: CKA=0.7296  Procrustes=0.5786  mean principal angle= 84.20 deg
+  layer  8: CKA=0.7297  Procrustes=0.5755  mean principal angle= 84.54 deg
+  layer  9: CKA=0.7289  Procrustes=0.5729  mean principal angle= 84.38 deg
+  layer 10: CKA=0.7296  Procrustes=0.5684  mean principal angle= 84.28 deg
+  layer 11: CKA=0.7316  Procrustes=0.5619  mean principal angle= 84.04 deg
+  layer 12: CKA=0.3825  Procrustes=0.8812  mean principal angle= 50.69 deg
+
+<Figure size 1760x495 with 3 Axes>
+Ending Cell 48-----------------------------------------
+Executing Cell 49--------------------------------------
+Ending Cell 49-----------------------------------------
+Executing Cell 50--------------------------------------
+Ending Cell 50-----------------------------------------
+Executing Cell 51--------------------------------------
+==============================================================================
+SECTION 6: HARDER TASKS -- BASELINE vs. ALIGNED vs. UNALIGNED (MLP AND HEAD)
+==============================================================================
+
+
+-- few_shot_antonym --
+
+            baseline: 0.000
+
+       aligned (MLP): 0.000
+
+     unaligned (MLP): 0.000
+
+      aligned (head): 0.000
+
+    unaligned (head): 0.000
+
+-- arithmetic --
+
+            baseline: 0.000
+
+       aligned (MLP): 0.000
+
+     unaligned (MLP): 0.000
+
+      aligned (head): 0.000
+
+    unaligned (head): 0.000
+
+-- induction --
+
+            baseline: 0.750
+
+       aligned (MLP): 0.750
+
+     unaligned (MLP): 0.000
+
+      aligned (head): 0.750
+
+    unaligned (head): 0.250
+
+-- compositional --
+
+            baseline: 0.500
+
+       aligned (MLP): 0.500
+
+     unaligned (MLP): 0.000
+
+      aligned (head): 0.500
+
+    unaligned (head): 0.250
+
+-- multi_hop --
+
+            baseline: 0.500
+
+       aligned (MLP): 0.500
+
+     unaligned (MLP): 0.000
+
+      aligned (head): 0.500
+
+    unaligned (head): 0.000
+
+<Figure size 1320x550 with 1 Axes>
+Ending Cell 51-----------------------------------------
+Executing Cell 52--------------------------------------
+Ending Cell 52-----------------------------------------
+Executing Cell 53--------------------------------------
+Ending Cell 53-----------------------------------------
+Executing Cell 54--------------------------------------
+==============================================================================
+SECTION 7: STATISTICAL VALIDATION (N=15 seeds, 95% CI)
+==============================================================================
+
+/usr/local/lib/python3.12/dist-packages/scipy/stats/_wilcoxon.py:178: RuntimeWarning: invalid value encountered in scalar divide
+  z = (r_plus - mn) / se
+
+     aligned (MLP) | mean=+0.00000  CI=[+0.00000, +0.00000]  Cohen's d=+0.000  Wilcoxon p=nan
+
+   unaligned (MLP) | mean=-0.25263  CI=[-0.26669, -0.23858]  Cohen's d=-9.953  Wilcoxon p=0.0007
+
+    aligned (head) | mean=+0.00000  CI=[+0.00000, +0.00000]  Cohen's d=+0.000  Wilcoxon p=nan
+
+  unaligned (head) | mean=-0.09427  CI=[-0.12740, -0.06115]  Cohen's d=-1.576  Wilcoxon p=0.0001
+
+<Figure size 990x495 with 1 Axes>
+Ending Cell 54-----------------------------------------
+Executing Cell 55--------------------------------------
+Ending Cell 55-----------------------------------------
+Executing Cell 56--------------------------------------
+Ending Cell 56-----------------------------------------
+Executing Cell 57--------------------------------------
+<Figure size 1540x1100 with 4 Axes>
+Summary dashboard saved to l1_summary_dashboard.png
+
+Ending Cell 57-----------------------------------------
+Executing Cell 58--------------------------------------
+Ending Cell 58-----------------------------------------
+Executing Cell 59--------------------------------------
+Ending Cell 59-----------------------------------------
+Executing Cell 60--------------------------------------
+<Figure size 1430x495 with 2 Axes>
+Ending Cell 60-----------------------------------------
+Executing Cell 61--------------------------------------
+Ending Cell 61-----------------------------------------
+Executing Cell 62--------------------------------------
+Ending Cell 62-----------------------------------------
+Executing Cell 63--------------------------------------
+Ending Cell 63-----------------------------------------
+Executing Cell 64--------------------------------------
+Setup complete: generic multi-architecture toolkit loaded.
+Architectures supported: GPT-2 family ('gpt2'), Pythia/GPT-NeoX ('neox'), GPT-Neo ('separate').
+
+Ending Cell 64-----------------------------------------
+Executing Cell 65--------------------------------------
+Ending Cell 65-----------------------------------------
+Executing Cell 66--------------------------------------
+Ending Cell 66-----------------------------------------
+Executing Cell 67--------------------------------------
+Ending Cell 67-----------------------------------------
+Executing Cell 68--------------------------------------
+==============================================================================
+SECTION 2: SCALING STUDY -- GPT-2 SMALL / MEDIUM / LARGE
+==============================================================================
+
+-- gpt2 --
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...11}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+                    baseline | accuracy=0.3155  perplexity=    56.629
+
+                     aligned | accuracy=0.3155  perplexity=    56.629
+                   unaligned | accuracy=0.0409  perplexity=  3892.823
+
+-- gpt2-medium --
+
+config.json:   0%|          | 0.00/718 [00:00<?, ?B/s]
+tokenizer_config.json:   0%|          | 0.00/26.0 [00:00<?, ?B/s]
+vocab.json: 0.00B [00:00, ?B/s]
+merges.txt: 0.00B [00:00, ?B/s]
+tokenizer.json: 0.00B [00:00, ?B/s]
+model.safetensors:   0%|          | 0.00/1.52G [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2-medium
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...23}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+generation_config.json:   0%|          | 0.00/124 [00:00<?, ?B/s]
+                    baseline | accuracy=0.4448  perplexity=    27.092
+
+                     aligned | accuracy=0.4448  perplexity=    27.092
+
+                   unaligned | accuracy=0.0125  perplexity=248298.311
+
+-- gpt2-large --
+
+config.json:   0%|          | 0.00/666 [00:00<?, ?B/s]
+tokenizer_config.json:   0%|          | 0.00/26.0 [00:00<?, ?B/s]
+vocab.json: 0.00B [00:00, ?B/s]
+merges.txt: 0.00B [00:00, ?B/s]
+tokenizer.json: 0.00B [00:00, ?B/s]
+model.safetensors:   0%|          | 0.00/3.25G [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/436 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2-large
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...35}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+generation_config.json:   0%|          | 0.00/124 [00:00<?, ?B/s]
+                    baseline | accuracy=0.4593  perplexity=    23.866
+
+                     aligned | accuracy=0.4593  perplexity=    23.866
+
+                   unaligned | accuracy=0.0000  perplexity= 13585.761
+
+<Figure size 1430x495 with 2 Axes>
+
+Scaling summary:
+          gpt2 ( 124.4M params, 12 layers, d_mlp= 3072): aligned diff=+0.00000  unaligned diff=-0.27459
+   gpt2-medium ( 354.8M params, 24 layers, d_mlp= 4096): aligned diff=+0.00000  unaligned diff=-0.43229
+    gpt2-large ( 774.0M params, 36 layers, d_mlp= 5120): aligned diff=+0.00000  unaligned diff=-0.45928
+
+Ending Cell 68-----------------------------------------
+Executing Cell 69--------------------------------------
+Ending Cell 69-----------------------------------------
+Executing Cell 70--------------------------------------
+Ending Cell 70-----------------------------------------
+Executing Cell 71--------------------------------------
+==============================================================================
+SECTION 3: CROSS-ARCHITECTURE STUDY -- MLP PERMUTATION
+==============================================================================
+
+-- gpt2 (gpt2) --
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...11}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+                    baseline | accuracy=0.3155  perplexity=    56.629
+                 aligned MLP | accuracy=0.3155  perplexity=    56.629
+
+               unaligned MLP | accuracy=0.0409  perplexity=  3892.823
+
+-- pythia (EleutherAI/pythia-160m) --
+
+config.json:   0%|          | 0.00/569 [00:00<?, ?B/s]
+tokenizer_config.json:   0%|          | 0.00/396 [00:00<?, ?B/s]
+tokenizer.json: 0.00B [00:00, ?B/s]
+special_tokens_map.json:   0%|          | 0.00/99.0 [00:00<?, ?B/s]
+model.safetensors:   0%|          | 0.00/375M [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+                    baseline | accuracy=0.2744  perplexity=    55.842
+
+                 aligned MLP | accuracy=0.2619  perplexity=    56.619
+               unaligned MLP | accuracy=0.0139  perplexity=  3345.135
+
+-- gpt-neo (EleutherAI/gpt-neo-125m) --
+
+config.json: 0.00B [00:00, ?B/s]
+tokenizer_config.json:   0%|          | 0.00/727 [00:00<?, ?B/s]
+vocab.json: 0.00B [00:00, ?B/s]
+merges.txt: 0.00B [00:00, ?B/s]
+special_tokens_map.json:   0%|          | 0.00/357 [00:00<?, ?B/s]
+tokenizer.json: 0.00B [00:00, ?B/s]
+model.safetensors:   0%|          | 0.00/526M [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/160 [00:00<?, ?it/s]
+GPTNeoForCausalLM LOAD REPORT from: EleutherAI/gpt-neo-125m
+Key                                                   | Status     |  | 
+------------------------------------------------------+------------+--+-
+transformer.h.{0...11}.attn.attention.masked_bias     | UNEXPECTED |  | 
+transformer.h.{0, 2, 4, 6, 8, 10}.attn.attention.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+generation_config.json:   0%|          | 0.00/119 [00:00<?, ?B/s]
+                    baseline | accuracy=0.2944  perplexity=    37.659
+
+                 aligned MLP | accuracy=0.2944  perplexity=    37.659
+
+               unaligned MLP | accuracy=0.0000  perplexity=1309910.959
+
+==============================================================================
+SECTION 3b: CROSS-ARCHITECTURE STUDY -- ATTENTION-HEAD PERMUTATION
+==============================================================================
+
+-- gpt2 (gpt2) --
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...11}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+                head-aligned | accuracy=0.3155  perplexity=    56.629
+              head-unaligned | accuracy=0.2166  perplexity=   314.341
+
+-- pythia (EleutherAI/pythia-160m) --
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+  head permutation not implemented/failed for this architecture: 'GPTNeoXAttention' object has no attribute 'num_attention_heads'
+
+-- gpt-neo (EleutherAI/gpt-neo-125m) --
+
+Loading weights:   0%|          | 0/160 [00:00<?, ?it/s]
+GPTNeoForCausalLM LOAD REPORT from: EleutherAI/gpt-neo-125m
+Key                                                   | Status     |  | 
+------------------------------------------------------+------------+--+-
+transformer.h.{0...11}.attn.attention.masked_bias     | UNEXPECTED |  | 
+transformer.h.{0, 2, 4, 6, 8, 10}.attn.attention.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+                head-aligned | accuracy=0.2944  perplexity=    37.659
+
+              head-unaligned | accuracy=0.0000  perplexity=4900207.634
+
+<Figure size 1430x495 with 2 Axes>
+Ending Cell 71-----------------------------------------
+Executing Cell 72--------------------------------------
+Ending Cell 72-----------------------------------------
+Executing Cell 73--------------------------------------
+Ending Cell 73-----------------------------------------
+Executing Cell 74--------------------------------------
+Ending Cell 74-----------------------------------------
+Executing Cell 75--------------------------------------
+==============================================================================
+SECTION 4: TRAINING-TIME STUDY -- PYTHIA CHECKPOINTS
+==============================================================================
+
+-- step1 --
+
+tokenizer_config.json:   0%|          | 0.00/396 [00:00<?, ?B/s]
+model.safetensors:   0%|          | 0.00/649M [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+                    baseline | accuracy=0.0000  perplexity= 71162.958
+                     aligned | accuracy=0.0000  perplexity= 71156.629
+
+                   unaligned | accuracy=0.0000  perplexity= 69429.681
+
+/tmp/ipykernel_62/977187017.py:199: RuntimeWarning: overflow encountered in scalar multiply
+  den = np.sqrt(((X.T @ X) ** 2).sum() * ((Y.T @ Y) ** 2).sum())
+
+  CKA(baseline, aligned)=0.0000   CKA(baseline, unaligned)=0.0000
+
+-- step1000 --
+
+model.safetensors:   0%|          | 0.00/649M [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+                    baseline | accuracy=0.2672  perplexity=   221.076
+                     aligned | accuracy=0.2672  perplexity=   221.072
+
+                   unaligned | accuracy=0.0139  perplexity=  5900.752
+
+/usr/local/lib/python3.12/dist-packages/numpy/_core/_methods.py:52: RuntimeWarning: overflow encountered in reduce
+  return umr_sum(a, axis, dtype, out, keepdims, initial, where)
+
+/tmp/ipykernel_62/977187017.py:200: RuntimeWarning: invalid value encountered in scalar divide
+  return float(num / den) if den > 0 else 0.0
+
+  CKA(baseline, aligned)=nan   CKA(baseline, unaligned)=nan
+
+-- step8000 --
+
+model.safetensors:   0%|          | 0.00/649M [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+                    baseline | accuracy=0.3069  perplexity=    57.380
+                     aligned | accuracy=0.3069  perplexity=    57.371
+
+                   unaligned | accuracy=0.0711  perplexity=  4850.724
+
+/tmp/ipykernel_62/977187017.py:198: RuntimeWarning: overflow encountered in square
+  num = ((X.T @ Y) ** 2).sum()
+
+/tmp/ipykernel_62/977187017.py:199: RuntimeWarning: overflow encountered in square
+  den = np.sqrt(((X.T @ X) ** 2).sum() * ((Y.T @ Y) ** 2).sum())
+
+  CKA(baseline, aligned)=nan   CKA(baseline, unaligned)=nan
+
+-- step32000 --
+
+model.safetensors:   0%|          | 0.00/649M [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+                    baseline | accuracy=0.3563  perplexity=    39.739
+
+                     aligned | accuracy=0.3563  perplexity=    39.745
+
+                   unaligned | accuracy=0.0243  perplexity=  4416.385
+
+  CKA(baseline, aligned)=nan   CKA(baseline, unaligned)=nan
+
+-- step71000 --
+
+model.safetensors:   0%|          | 0.00/649M [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+                    baseline | accuracy=0.3121  perplexity=    44.072
+                     aligned | accuracy=0.3121  perplexity=    44.078
+
+                   unaligned | accuracy=0.0364  perplexity=  3105.107
+
+  CKA(baseline, aligned)=nan   CKA(baseline, unaligned)=nan
+
+-- step143000 --
+
+model.safetensors:   0%|          | 0.00/649M [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+                    baseline | accuracy=0.2744  perplexity=    55.842
+                     aligned | accuracy=0.2619  perplexity=    56.619
+
+                   unaligned | accuracy=0.0139  perplexity=  3345.135
+
+  CKA(baseline, aligned)=nan   CKA(baseline, unaligned)=nan
+
+<Figure size 1760x495 with 3 Axes>
+Ending Cell 75-----------------------------------------
+Executing Cell 76--------------------------------------
+Ending Cell 76-----------------------------------------
+Executing Cell 77--------------------------------------
+Ending Cell 77-----------------------------------------
+Executing Cell 78--------------------------------------
+Ending Cell 78-----------------------------------------
+Executing Cell 79--------------------------------------
+==============================================================================
+SECTION 5: CROSS-MODEL ALIGNMENT -- GPT2 <-> DISTILGPT2
+==============================================================================
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...11}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+config.json:   0%|          | 0.00/762 [00:00<?, ?B/s]
+tokenizer_config.json:   0%|          | 0.00/26.0 [00:00<?, ?B/s]
+vocab.json: 0.00B [00:00, ?B/s]
+merges.txt: 0.00B [00:00, ?B/s]
+tokenizer.json: 0.00B [00:00, ?B/s]
+model.safetensors:   0%|          | 0.00/353M [00:00<?, ?B/s]
+Loading weights:   0%|          | 0/76 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: distilgpt2
+Key                                        | Status     |  | 
+-------------------------------------------+------------+--+-
+transformer.h.{0, 1, 2, 3, 4, 5}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+generation_config.json:   0%|          | 0.00/124 [00:00<?, ?B/s]
+gpt2 layer-0 MLP activations: (86, 3072), distilgpt2: (86, 3072)
+
+
+Mean matched cosine similarity:
+  random pairing:      0.5251
+  greedy cosine match:  0.9570
+  Hungarian (optimal):  0.9584
+
+<Figure size 1430x550 with 3 Axes>
+Ending Cell 79-----------------------------------------
+Executing Cell 80--------------------------------------
+Ending Cell 80-----------------------------------------
+Executing Cell 81--------------------------------------
+Ending Cell 81-----------------------------------------
+Executing Cell 82--------------------------------------
+Ending Cell 82-----------------------------------------
+Executing Cell 83--------------------------------------
+==============================================================================
+SECTION 6: LONG-CONTEXT EVALUATION -- NEEDLE-IN-HAYSTACK AND LONG MULTI-HOP
+==============================================================================
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...11}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+          baseline | needle-in-haystack=1.000  long multi-hop=0.500
+     aligned (MLP) | needle-in-haystack=1.000  long multi-hop=0.500
+   unaligned (MLP) | needle-in-haystack=0.000  long multi-hop=0.000
+    aligned (head) | needle-in-haystack=1.000  long multi-hop=0.500
+
+  unaligned (head) | needle-in-haystack=0.000  long multi-hop=0.000
+
+<Figure size 990x495 with 1 Axes>
+Ending Cell 83-----------------------------------------
+Executing Cell 84--------------------------------------
+Ending Cell 84-----------------------------------------
+Executing Cell 85--------------------------------------
+Ending Cell 85-----------------------------------------
+Executing Cell 86--------------------------------------
+Ending Cell 86-----------------------------------------
+Executing Cell 87--------------------------------------
+==============================================================================
+SECTION 7: EXPANDED CAUSAL ANALYSIS -- GPT-2-SMALL
+==============================================================================
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...11}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+
+-- Factual circuits, baseline vs. aligned --
+
+  layer  0: baseline restoration=0.337  aligned restoration=0.337
+  layer  1: baseline restoration=0.276  aligned restoration=0.276
+  layer  2: baseline restoration=0.168  aligned restoration=0.169
+  layer  3: baseline restoration=-0.163  aligned restoration=-0.163
+  layer  4: baseline restoration=0.069  aligned restoration=0.069
+  layer  5: baseline restoration=0.238  aligned restoration=0.238
+  layer  6: baseline restoration=0.438  aligned restoration=0.438
+  layer  7: baseline restoration=0.403  aligned restoration=0.403
+  layer  8: baseline restoration=0.140  aligned restoration=0.140
+  layer  9: baseline restoration=-0.020  aligned restoration=-0.020
+  layer 10: baseline restoration=-0.150  aligned restoration=-0.150
+  layer 11: baseline restoration=0.000  aligned restoration=0.000
+
+-- Reasoning-feature linear probing (comparative relation), baseline vs. aligned --
+
+  comparative-relation probe (layer 6): baseline=1.0  aligned=1.0
+
+<Figure size 990x495 with 1 Axes>
+Ending Cell 87-----------------------------------------
+Executing Cell 88--------------------------------------
+Ending Cell 88-----------------------------------------
+Executing Cell 89--------------------------------------
+Ending Cell 89-----------------------------------------
+Executing Cell 90--------------------------------------
+Ending Cell 90-----------------------------------------
+Executing Cell 91--------------------------------------
+==============================================================================
+SECTION 8: STATISTICAL AGGREGATION -- META-ANALYSIS ACROSS ARCHITECTURES (N=15 seeds each)
+==============================================================================
+
+-- gpt2 --
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...11}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+  mean=-0.25180  CI=[-0.26598, -0.23763]  Cohen's d=-9.838  Wilcoxon p=0.0007
+
+-- gpt2-medium --
+
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2-medium
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...23}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+  mean=-0.41353  CI=[-0.42901, -0.39805]  Cohen's d=-14.792  Wilcoxon p=0.0006
+
+-- pythia --
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+  mean=-0.23201  CI=[-0.24112, -0.22290]  Cohen's d=-14.097  Wilcoxon p=0.0007
+
+-- gpt-neo --
+
+Loading weights:   0%|          | 0/160 [00:00<?, ?it/s]
+GPTNeoForCausalLM LOAD REPORT from: EleutherAI/gpt-neo-125m
+Key                                                   | Status     |  | 
+------------------------------------------------------+------------+--+-
+transformer.h.{0...11}.attn.attention.masked_bias     | UNEXPECTED |  | 
+transformer.h.{0, 2, 4, 6, 8, 10}.attn.attention.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+  mean=-0.29279  CI=[-0.29512, -0.29046]  Cohen's d=-69.647  Wilcoxon p=0.0002
+
+Meta-analytic summary across 4 architectures:
+  mean Cohen's d = -27.094  (cross-architecture SD = 28.454)
+  min/max Cohen's d = -69.647 / -9.838
+
+<Figure size 990x495 with 1 Axes>
+Ending Cell 91-----------------------------------------
+Executing Cell 92--------------------------------------
+Ending Cell 92-----------------------------------------
+Executing Cell 93--------------------------------------
+Ending Cell 93-----------------------------------------
+Executing Cell 94--------------------------------------
+Ending Cell 94-----------------------------------------
+Executing Cell 95--------------------------------------
+<Figure size 1650x1210 with 5 Axes>
+====================================================================================================
+PERFORMANCE SUMMARY TABLE
+====================================================================================================
+           Model |  Params(M) | Baseline acc | Aligned diff | Unaligned diff
+            gpt2 |      124.4 |       0.3155 |     +0.00000 |       -0.27459
+     gpt2-medium |      354.8 |       0.4448 |     +0.00000 |       -0.43229
+      gpt2-large |      774.0 |       0.4593 |     +0.00000 |       -0.45928
+            gpt2 |         -- |       0.3155 |     +0.00000 |       -0.27459
+          pythia |         -- |       0.2744 |     -0.01250 |       -0.26048
+         gpt-neo |         -- |       0.2944 |     +0.00000 |       -0.29438
+
+Ending Cell 95-----------------------------------------
+Executing Cell 96--------------------------------------
+Ending Cell 96-----------------------------------------
+Executing Cell 97--------------------------------------
+Ending Cell 97-----------------------------------------
+Executing Cell 98--------------------------------------
+Ending Cell 98-----------------------------------------
+Executing Cell 99--------------------------------------
+==============================================================================
+SECTION 11.1: CORRECTED RE-RUN -- PYTHIA ATTENTION-HEAD PERMUTATION
+==============================================================================
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+                    baseline | accuracy=0.2744  perplexity=    55.842
+        head-aligned (fixed) | accuracy=0.2744  perplexity=    55.198
+
+      head-unaligned (fixed) | accuracy=0.1151  perplexity=  2945.084
+
+Max abs logit diff, head-aligned:   5.00e-01  (expect ~1e-4, floating-point noise)
+Max abs logit diff, head-unaligned: 58.500  (expect large)
+
+cross_arch_results['pythia'] updated in place with the corrected head-permutation rows.
+
+Ending Cell 99-----------------------------------------
+Executing Cell 100-------------------------------------
+Ending Cell 100----------------------------------------
+Executing Cell 101-------------------------------------
+==============================================================================
+SECTION 11.2: CORRECTED RE-RUN -- PYTHIA TRAINING-TIME REPRESENTATION SIMILARITY
+==============================================================================
+
+-- step1 --
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+  hidden-state magnitude (mean abs): 1.10e-01  (this is what overflowed float32's squared range in the original run)
+  CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9506
+
+-- step1000 --
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+  hidden-state magnitude (mean abs): 1.42e-01  (this is what overflowed float32's squared range in the original run)
+  CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9174
+
+-- step8000 --
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+  hidden-state magnitude (mean abs): 5.97e-01  (this is what overflowed float32's squared range in the original run)
+  CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.9124
+
+-- step32000 --
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+  hidden-state magnitude (mean abs): 6.37e-01  (this is what overflowed float32's squared range in the original run)
+  CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.8906
+
+-- step71000 --
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+  hidden-state magnitude (mean abs): 4.72e-01  (this is what overflowed float32's squared range in the original run)
+  CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.8439
+
+-- step143000 --
+
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+  hidden-state magnitude (mean abs): 2.65e-01  (this is what overflowed float32's squared range in the original run)
+  CKA(baseline, aligned)=1.0000   CKA(baseline, unaligned)=0.8645
+
+<Figure size 990x495 with 1 Axes>
+Ending Cell 101----------------------------------------
+Executing Cell 102-------------------------------------
+Ending Cell 102----------------------------------------
+Executing Cell 103-------------------------------------
+Ending Cell 103----------------------------------------
+Executing Cell 104-------------------------------------
+Ending Cell 104----------------------------------------
+Executing Cell 105-------------------------------------
+Ending Cell 105----------------------------------------
+Executing Cell 106-------------------------------------
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]
+GPT2LMHeadModel LOAD REPORT from: gpt2
+Key                  | Status     |  | 
+---------------------+------------+--+-
+h.{0...11}.attn.bias | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED	:can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+                        baseline | acc=0.3155 (diff=+0.0000)  ppl=     56.63  mean_CKA=1.0000  final_CKA=1.0000  mean_restoration=+0.235
+
+Setup complete: core battery loaded.
+
+Ending Cell 106----------------------------------------
+Executing Cell 107-------------------------------------
+Ending Cell 107----------------------------------------
+Executing Cell 108-------------------------------------
+Transformations 2.1-2.5 implemented.
+
+Ending Cell 108----------------------------------------
+Executing Cell 109-------------------------------------
+Ending Cell 109----------------------------------------
+Executing Cell 110-------------------------------------
+Transformations 2.6-2.11 implemented. Full library of 11 transformations ready.
+
+11 transformations registered:
+  - mlp_permutation
+  - head_permutation
+  - multihead_block_permutation
+  - basis_change
+  - global_rotation
+  - gaussian_noise
+  - weight_interpolation
+  - low_rank_perturbation
+  - sparse_permutation
+  - layer_local_permutation
+  - cross_layer_permutation
+
+Ending Cell 110----------------------------------------
+Executing Cell 111-------------------------------------
+Ending Cell 111----------------------------------------
+Executing Cell 112-------------------------------------
+Ending Cell 112----------------------------------------
+Executing Cell 113-------------------------------------
+Ending Cell 113----------------------------------------
+Executing Cell 114-------------------------------------
+Ending Cell 114----------------------------------------
+Executing Cell 115-------------------------------------
+====================================================================================================
+SECTION 3: EXPERIMENTAL PIPELINE -- FULL BATTERY ACROSS THE TRANSFORMATION LIBRARY
+====================================================================================================
+
+                 mlp_permutation | acc=0.3155 (diff=+0.0000)  ppl=     56.63  mean_CKA=1.0000  final_CKA=1.0000  mean_restoration=+0.235
+
+                head_permutation | acc=0.3155 (diff=+0.0000)  ppl=     56.63  mean_CKA=1.0000  final_CKA=1.0000  mean_restoration=+0.235
+
+     multihead_block_permutation | acc=0.3155 (diff=+0.0000)  ppl=     56.63  mean_CKA=1.0000  final_CKA=1.0000  mean_restoration=+0.235
+
+                    basis_change | acc=0.0253 (diff=-0.2902)  ppl=99524097573538951776054531991604559685753838233374729346971680759193441337228571586233822153027121587875714483355648.00  mean_CKA=0.4050  final_CKA=0.3126  mean_restoration=-0.184
+
+                 global_rotation | acc=0.0000 (diff=-0.3155)  ppl=205711826.51  mean_CKA=0.7514  final_CKA=0.3825  mean_restoration=+0.975
+
+                  gaussian_noise | acc=0.3155 (diff=+0.0000)  ppl=     57.79  mean_CKA=0.9998  final_CKA=0.9969  mean_restoration=-0.172
+
+            weight_interpolation | acc=0.1238 (diff=-0.1916)  ppl=   1625.91  mean_CKA=0.9435  final_CKA=0.3017  mean_restoration=+0.587
+
+           low_rank_perturbation | acc=0.1800 (diff=-0.1354)  ppl=    238.34  mean_CKA=0.9683  final_CKA=0.6560  mean_restoration=+0.595
+
+              sparse_permutation | acc=0.3155 (diff=+0.0000)  ppl=     56.63  mean_CKA=1.0000  final_CKA=1.0000  mean_restoration=+0.235
+
+         layer_local_permutation | acc=0.3155 (diff=+0.0000)  ppl=     56.63  mean_CKA=1.0000  final_CKA=1.0000  mean_restoration=+0.235
+
+         cross_layer_permutation | acc=0.3155 (diff=+0.0000)  ppl=     56.63  mean_CKA=1.0000  final_CKA=1.0000  mean_restoration=+0.235
+
+Pipeline complete: all 11 transformations evaluated against the full battery.
+
+Ending Cell 115----------------------------------------
+Executing Cell 116-------------------------------------
+Ending Cell 116----------------------------------------
+Executing Cell 117-------------------------------------
+Ending Cell 117----------------------------------------
+Executing Cell 118-------------------------------------
+Ending Cell 118----------------------------------------
+Executing Cell 119-------------------------------------
+====================================================================================================
+SECTION 4: IDENTITY PRESERVATION MATRIX
+====================================================================================================
+                Transformation |  Acc diff |  Mean CKA |  Final CKA |  Restoration |        Class
+----------------------------------------------------------------------------------------------------
+               mlp_permutation |   +0.0000 |    1.0000 |     1.0000 |       +0.235 |        Exact
+              head_permutation |   +0.0000 |    1.0000 |     1.0000 |       +0.235 |        Exact
+   multihead_block_permutation |   +0.0000 |    1.0000 |     1.0000 |       +0.235 |        Exact
+                  basis_change |   -0.2902 |    0.4050 |     0.3126 |       -0.184 |       Broken
+               global_rotation |   -0.3155 |    0.7514 |     0.3825 |       +0.975 |       Broken
+                gaussian_noise |   +0.0000 |    0.9998 |     0.9969 |       -0.172 |        Exact
+          weight_interpolation |   -0.1916 |    0.9435 |     0.3017 |       +0.587 |       Broken
+         low_rank_perturbation |   -0.1354 |    0.9683 |     0.6560 |       +0.595 |  Approximate
+            sparse_permutation |   +0.0000 |    1.0000 |     1.0000 |       +0.235 |        Exact
+       layer_local_permutation |   +0.0000 |    1.0000 |     1.0000 |       +0.235 |        Exact
+       cross_layer_permutation |   +0.0000 |    1.0000 |     1.0000 |       +0.235 |        Exact
+
+<Figure size 990x660 with 2 Axes>
+Ending Cell 119----------------------------------------
+Executing Cell 120-------------------------------------
+Ending Cell 120----------------------------------------
+Executing Cell 121-------------------------------------
+Ending Cell 121----------------------------------------
+Executing Cell 122-------------------------------------
+Ending Cell 122----------------------------------------
+Executing Cell 123-------------------------------------
+====================================================================================================
+SECTION 5: BOUNDARY ANALYSIS -- DEGRADATION CURVES
+====================================================================================================
+
+-- gaussian_noise --
+  magnitude=  0.00 | accuracy=0.3155
+
+  magnitude=  0.05 | accuracy=0.3155
+
+  magnitude=  0.10 | accuracy=0.3155
+
+  magnitude=  0.20 | accuracy=0.3155
+
+  magnitude=  0.40 | accuracy=0.3407
+
+  magnitude=  0.80 | accuracy=0.2831
+
+  magnitude=  1.50 | accuracy=0.1119
+
+-- low_rank_perturbation --
+  magnitude=  0.00 | accuracy=0.3155
+
+  magnitude=  1.00 | accuracy=0.2930
+
+  magnitude=  2.00 | accuracy=0.2280
+
+  magnitude=  4.00 | accuracy=0.1800
+
+  magnitude=  8.00 | accuracy=0.1321
+
+  magnitude= 16.00 | accuracy=0.2211
+
+  magnitude= 32.00 | accuracy=0.1610
+
+-- weight_interpolation --
+  magnitude=  0.00 | accuracy=0.3155
+
+  magnitude=  0.10 | accuracy=0.3237
+
+  magnitude=  0.20 | accuracy=0.2873
+
+  magnitude=  0.40 | accuracy=0.1352
+
+  magnitude=  0.60 | accuracy=0.1604
+
+  magnitude=  0.80 | accuracy=0.2873
+
+  magnitude=  1.00 | accuracy=0.3155
+
+-- sparse_permutation --
+  magnitude=  0.00 | accuracy=0.3155
+
+  magnitude=  0.05 | accuracy=0.3155
+
+  magnitude=  0.10 | accuracy=0.3155
+
+  magnitude=  0.20 | accuracy=0.3155
+
+  magnitude=  0.40 | accuracy=0.3155
+
+  magnitude=  0.70 | accuracy=0.3155
+
+  magnitude=  1.00 | accuracy=0.3155
+
+-- basis_change --
+  magnitude=  0.00 | accuracy=0.3155
+
+  magnitude=  0.05 | accuracy=0.0000
+
+  magnitude=  0.10 | accuracy=0.0000
+
+  magnitude=  0.20 | accuracy=0.0253
+
+  magnitude=  0.40 | accuracy=0.0366
+
+  magnitude=  0.80 | accuracy=0.0000
+
+  magnitude=  1.50 | accuracy=0.0253
+
+<Figure size 1100x660 with 1 Axes>
+Ending Cell 123----------------------------------------
+Executing Cell 124-------------------------------------
+Ending Cell 124----------------------------------------
+Executing Cell 125-------------------------------------
+Ending Cell 125----------------------------------------
+Executing Cell 126-------------------------------------
+Ending Cell 126----------------------------------------
+Executing Cell 127-------------------------------------
+Ending Cell 127----------------------------------------
+Executing Cell 128-------------------------------------
+====================================================================================================
+SECTION 6: SYMMETRY DISCOVERY -- HIERARCHICAL CLUSTERING
+====================================================================================================
+
+Cluster assignment (k=3) vs. Section 4 categorical class:
+                Transformation | Cluster |  Section 4 class
+               mlp_permutation |       1 |            Exact
+              head_permutation |       1 |            Exact
+   multihead_block_permutation |       1 |            Exact
+                  basis_change |       3 |           Broken
+               global_rotation |       2 |           Broken
+                gaussian_noise |       1 |            Exact
+          weight_interpolation |       2 |           Broken
+         low_rank_perturbation |       2 |      Approximate
+            sparse_permutation |       1 |            Exact
+       layer_local_permutation |       1 |            Exact
+       cross_layer_permutation |       1 |            Exact
+
+<Figure size 1650x660 with 3 Axes>
+Ending Cell 128----------------------------------------
+Executing Cell 129-------------------------------------
+Ending Cell 129----------------------------------------
+Executing Cell 130-------------------------------------
+Ending Cell 130----------------------------------------
+Executing Cell 131-------------------------------------
+Ending Cell 131----------------------------------------
+Executing Cell 132-------------------------------------
+<Figure size 1760x1320 with 4 Axes>
+Summary dashboard saved to l25_summary_dashboard.png
+
+Ending Cell 132----------------------------------------
+Executing Cell 133-------------------------------------
+Ending Cell 133----------------------------------------
+Executing Cell 134-------------------------------------
+Ending Cell 134----------------------------------------
+Executing Cell 135-------------------------------------
+Ending Cell 135----------------------------------------
+Executing Cell 136-------------------------------------
+Ending Cell 136----------------------------------------
+Executing Cell 137-------------------------------------
+Ending Cell 137----------------------------------------
+Executing Cell 138-------------------------------------
+Synthetic validation model ready: W_fc (4, 16) W_proj (16, 4)
+Test input batch: (5, 4)
+
+Baseline MLP output (first row): [-4.535   3.6965  1.7919  4.3928]
+
+Ending Cell 138----------------------------------------
+Executing Cell 139-------------------------------------
+Ending Cell 139----------------------------------------
+Executing Cell 140-------------------------------------
+==============================================================================
+SECTION 3 VALIDATION: GROUP ACTION AXIOMS AND ORBIT SIZE (toy model, d_mlp=4 for enumerability)
+==============================================================================
+Identity acts trivially: True (max diff 0.00e+00)
+
+Compatibility with composition holds: True (max diff 0.00e+00)
+
+|G| = 4! = 24
+Enumerated orbit size: 24
+Numerically distinct orbit elements: 24 / 24
+Trivial stabilizer confirmed: True  (i.e., |Stab(theta)|=1, matching |Orb|*|Stab|=|G| via the orbit-stabilizer theorem)
+
+Ending Cell 140----------------------------------------
+Executing Cell 141-------------------------------------
+Ending Cell 141----------------------------------------
+Executing Cell 142-------------------------------------
+Ending Cell 142----------------------------------------
+Executing Cell 143-------------------------------------
+Ending Cell 143----------------------------------------
+Executing Cell 144-------------------------------------
+Ending Cell 144----------------------------------------
+Executing Cell 145-------------------------------------
+==============================================================================
+SECTION 4 VALIDATION: THEOREMS 4.2, 4.3, AND LEMMA 4.5 / COROLLARY 4.6
+==============================================================================
+
+Theorem 4.2 (aligned permutation): max |diff| over batch = 9.54e-07  (machine-precision zero, exactly as proven)
+Theorem 4.3 (unaligned permutation): max |diff| over batch = 11.7035  (generically nonzero, as proven -- would be 0 only on a measure-zero set of W_proj)
+
+Lemma 4.5 -- mean:  original=-0.350929  permuted=-0.350929 (diff=0.00e+00)  rotated=-0.017285 (diff=0.3336)
+Lemma 4.5 -- var:   original=0.486510  permuted=0.486510 (diff=0.00e+00)  rotated=0.609362 (diff=0.1229)
+
+Corollary 4.6 -- LN(xP) vs. LN(x)P (gamma,beta relabeled together): max diff = 0.00e+00  (commutes exactly)
+Corollary 4.6 -- LN(xQ) vs. LN(x)Q (no valid relabeling exists):      max diff = 3.4633  (does NOT commute)
+
+Ending Cell 145----------------------------------------
+Executing Cell 146-------------------------------------
+Ending Cell 146----------------------------------------
+Executing Cell 147-------------------------------------
+Ending Cell 147----------------------------------------
+Executing Cell 148-------------------------------------
+Ending Cell 148----------------------------------------
+Executing Cell 149-------------------------------------
+==============================================================================
+SECTION 5 VALIDATION: WEIGHT INTERPOLATION BARRIER (toy model, reproducing L2.5's qualitative result)
+==============================================================================
+
+<Figure size 880x495 with 1 Axes>
+
+Output deviation at alpha=0.0: 0.00e+00  (exact, per Theorem 4.2)
+Output deviation at alpha=0.5: 19.0706  (interior -- generically nonzero)
+Output deviation at alpha=1.0: 2.53e-06  (exact, per Theorem 4.2)
+
+This toy-model curve is qualitatively the same shape as L2.5's real GPT-2 result
+(accuracy 0.3155 -> 0.135 (worst, near alpha=0.4) -> 0.3155): endpoints exact, interior barrier.
+
+Ending Cell 149----------------------------------------
+Executing Cell 150-------------------------------------
+Ending Cell 150----------------------------------------
+Executing Cell 151-------------------------------------
+Ending Cell 151----------------------------------------
+Executing Cell 152-------------------------------------
+Ending Cell 152----------------------------------------
+Executing Cell 153-------------------------------------
+==============================================================================
+SECTION 6 VALIDATION: THEOREM 6.2 (EXACT RECOVERY, PLANTED CASE) AND
+COROLLARY 6.3 (APPROXIMATE RECOVERY, INDEPENDENT CASE)
+==============================================================================
+
+Planted case: exact recovery of true permutation = True
+(Hungarian recovers all 32 correspondences correctly: True, as Theorem 6.2 predicts)
+
+Independent case (no true correspondence exists):
+  Hungarian-matched mean similarity:  0.1323
+  Random-pairing mean similarity:     -0.0048
+  (Hungarian still finds the BEST available pairing, per Corollary 6.3, but this
+   is evidence of approximate structure, not recovery of a ground-truth P*)
+
+Ending Cell 153----------------------------------------
+Executing Cell 154-------------------------------------
+Ending Cell 154----------------------------------------
+Executing Cell 155-------------------------------------
+Ending Cell 155----------------------------------------
+Executing Cell 156-------------------------------------
+Ending Cell 156----------------------------------------
+Executing Cell 157-------------------------------------
+<Figure size 1650x1210 with 3 Axes>
+Ending Cell 157----------------------------------------
+Executing Cell 158-------------------------------------
+Ending Cell 158----------------------------------------
+Executing Cell 159-------------------------------------
+Ending Cell 159----------------------------------------
+Executing Cell 160-------------------------------------
+Ending Cell 160----------------------------------------
+Executing Cell 161-------------------------------------
+Ending Cell 161----------------------------------------
+Executing Cell 162-------------------------------------
+Ending Cell 162----------------------------------------
+Executing Cell 163-------------------------------------
+Ending Cell 163----------------------------------------
+Executing Cell 164-------------------------------------
+Setup complete. Test distribution: 50 synthetic 'tokens' in R^4.
+
+Ending Cell 164----------------------------------------
+Executing Cell 165-------------------------------------
+Ending Cell 165----------------------------------------
+Executing Cell 166-------------------------------------
+Ending Cell 166----------------------------------------
+Executing Cell 167-------------------------------------
+Ending Cell 167----------------------------------------
+Executing Cell 168-------------------------------------
+Ending Cell 168----------------------------------------
+Executing Cell 169-------------------------------------
+Ending Cell 169----------------------------------------
+Executing Cell 170-------------------------------------
+WIS toolkit defined. Default weights: {'B': 0.3, 'R': 0.25, 'C': 0.2, 'Rb': 0.15, 'U': 0.1}
+Thresholds: identical >= 0.95, similar >= 0.7
+
+Ending Cell 170----------------------------------------
+Executing Cell 171-------------------------------------
+Ending Cell 171----------------------------------------
+Executing Cell 172-------------------------------------
+Ending Cell 172----------------------------------------
+Executing Cell 173-------------------------------------
+==========================================================================================
+ VALIDATION: WIS ON FOUR TOY CONDITIONS (aligned, unaligned, rotation, noise)
+==========================================================================================
+   aligned | S_B=1.0000  S_R=1.0000  S_C=1.0000  S_Rb=1.0000  S_U=1.0000  WIS=1.0000  ->  Functionally identical
+ unaligned | S_B=0.3800  S_R=0.5032  S_C=0.9404  S_Rb=0.3400  S_U=0.2410  WIS=0.5030  ->  Functionally distinct
+  rotation | S_B=0.5000  S_R=0.4736  S_C=0.9627  S_Rb=0.6600  S_U=0.4043  WIS=0.6004  ->  Functionally distinct
+     noise | S_B=0.9600  S_R=0.8965  S_C=0.9791  S_Rb=0.8800  S_U=0.7621  WIS=0.9162  ->  Functionally similar
+
+Ending Cell 173----------------------------------------
+Executing Cell 174-------------------------------------
+Ending Cell 174----------------------------------------
+Executing Cell 175-------------------------------------
+Ending Cell 175----------------------------------------
+Executing Cell 176-------------------------------------
+Ending Cell 176----------------------------------------
+Executing Cell 177-------------------------------------
+Ending Cell 177----------------------------------------
+Executing Cell 178-------------------------------------
+Ending Cell 178----------------------------------------

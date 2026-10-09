@@ -1,0 +1,4 @@
+core_mean,external_mean,n_core,n_external,boot_ci_2_5,boot_ci_97_5,core_within_external_boot_ci_95,empirical_two_sided_p,model,external_source,is_real_benchmark
+0.4524936946108937,0.4012881927192211,8,64,0.35712623512372377,0.4460638766176998,False,0.0206,Qwen2.5-1.5B,"lambada-test (real external benchmark, n=1000)",True
+0.46553031355142593,0.3922371636144817,8,64,0.3503464979119599,0.4325043700635433,False,0.0002,Gemma-2-2b,"lambada-test (real external benchmark, n=1000)",True
+0.4291666839271784,0.37488922476768494,8,64,0.3384337383322418,0.41554344771429885,False,0.006,Llama-3.2-1B,"lambada-test (real external benchmark, n=1000)",True
