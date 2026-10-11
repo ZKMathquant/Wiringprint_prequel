@@ -1,5 +1,13 @@
 # Wiringprint_prequel
 
+```
+We study whether two parametrizations of a transformer MLP or at-
+tention block that are related by an exact permutation symmetry produce
+functionally identical representations, and we use this property as a falsi-
+fication test rather than a proof of identity
+(Under review, do not distribute)
+```
+
 NEWS: Have been able to run all the notebooks from the workflow and they ran on kaggle cloud and pulled the resuts in here-you can check runs for that.
 Have saved it in archive `archive/succesful_runs_of_all_notebooks`- have all 4 of 'em including outputs,plots etc.
 
